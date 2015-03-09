@@ -10,7 +10,7 @@
 
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="src/static/css/main.css" rel="stylesheet" type="text/css">
+<link href="./static/css/main.css" rel="stylesheet" type="text/css">
 
 <style type="text/css">
 
@@ -226,12 +226,12 @@
 	</div>
 
 
-	<script src="src/static/js/jquery.min.js"></script>
-	<script src="src/static/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="src/static/js/jwerty/jwerty.js"></script>
-	<script type="text/javascript" src="src/static/jwplayer/jwplayer.js"></script>
-	<script type="text/javascript" src="src/static/js/moment.min.js"></script>
-	<script type="text/javascript" src="src/static/js/player.js"></script>
+	<script src="./static/js/jquery.min.js"></script>
+	<script src="./static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./static/js/jwerty/jwerty.js"></script>
+	<script type="text/javascript" src="./static/jwplayer/jwplayer.js"></script>
+	<script type="text/javascript" src="./static/js/moment.min.js"></script>
+	<script type="text/javascript" src="./static/js/player.js"></script>
 
 
 	</body></html>
