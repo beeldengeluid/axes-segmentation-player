@@ -7,7 +7,7 @@ var _end = 0;
 var _screenScale = 0;
 var _videos = [];
 var _fragmentMode = false;
-var _anchors = {};
+
 
 
 var _curVideoIndex = 0;
@@ -104,18 +104,31 @@ function onPlayerReady(e) {
 function updateAnchors() {
 	var html = [];
 	html.push('<ul class="list-group">');
-	$.each(_videoData['relevant'], function(index, value) {
+	$.each(_videos[_curVideoIndex].anchors, function(index, value) {
 		console.debug(value);
-		_videos.push(value);//add to the list, reference by index (of list elements)
 		html.push('<li class="list-group-item" onclick="selectVideo('+index+');">');
-		html.push('<a href="#">' + value.title + '</a></li>');
+		html.push('<a href="#">' + value.label + '</a></li>');
 	});
 	html.push('</ul>');
-	$('#fragments').html(html.join(''));
+	$('#anchors').html(html.join(''));
 }
 
-function saveAnchor() {
-
+function saveAnchor(index) {
+	var anchor = {
+		start : _start * 1000,
+		end : _end * 1000,
+		label : 'test',
+      	descriptionIdealLink : 'test2'
+	}
+	if(index) {
+		//TODO update
+	}
+	if(_videos[_curVideoIndex].anchors) {
+		_videos[_curVideoIndex].anchors.push(anchor);
+	} else {
+		_videos[_curVideoIndex].anchors = [anchor];
+	}
+	updateAnchors();
 }
 
 function switchMode() {
