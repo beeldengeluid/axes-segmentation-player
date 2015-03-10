@@ -22,7 +22,7 @@ $tpl = new Savant3();
 
 $data = $_POST['data'];
 
-echo json_encode($data);
+echo $data;
 
 //$tpl->data = $data;
 //$tpl->display('templates/segmentvideo.tpl.php');
