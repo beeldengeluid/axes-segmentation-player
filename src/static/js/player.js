@@ -39,6 +39,7 @@ $(document).ready( function(){
 function setStart(start) {
 	if(start == undefined) {
 		_start = jw.getPosition();
+		console.debug('JW pos: ' + _start);
 	} else {
 		_start = start;
 	}
@@ -145,13 +146,13 @@ function updateBar() {
 		var start = _videos[_curVideoIndex].start / 1000;
 		var end = _videos[_curVideoIndex].end / 1000;
 		var dur = end - start;
-		console.debug('DURATION= ' + dur + ' start=' + start + 'end=' + end);
+		console.debug('DURATION= ' + dur + '('+(_end - _start)+') start=' + start + '('+_start+' )end=' + end + '('+_end+')');
 		var t = jw.getPosition();
 		var dt = t - start;
 		var formattedTime = formatTime(t);
 		var elapsed = c.width / 100 * (dt / (dur / 100));
-		var startPoint = c.width / 100 * ((_start - dur) / (dur / 100));
-		var endPoint = c.width / 100 * ((_end - dur) / (dur / 100));
+		var startPoint = c.width / 100 * ((_start - start) / (dur / 100));
+		var endPoint = c.width / 100 * ((_end - start) / (dur / 100));
 		var ctx = c.getContext("2d");
 		ctx.clearRect (0, 0, c.width, c.height);
 		ctx.fillStyle = "#FF0000";
@@ -221,7 +222,7 @@ function playFragment(videoObj) {
 	_start = -1;
 	_end = -1
 	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL + '?t=' + _start + ',' + _end,
+		file: videoObj.videoURL + '?t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
 		width:'100%',
 		controls : false,
 		image: null
