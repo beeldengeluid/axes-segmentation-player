@@ -125,15 +125,17 @@ function saveAnchor() {
 	var anchor = {
 		start : _start * 1000,
 		end : _end * 1000,
-		label : 'test',
+		label : 'anchor ' + (_currentAnchorIndex + 1),
       	descriptionIdealLink : 'test2'
 	}
 	if(_currentAnchorIndex != -1) {
 		_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
 	} else {
 		if(_videos[_curVideoIndex].anchors) {
+			anchor.label = 'anchor ' + (_videos[_curVideoIndex].anchors.length + 1);
 			_videos[_curVideoIndex].anchors.push(anchor);
 		} else {
+			anchor.label = 'anchor 1';
 			_videos[_curVideoIndex].anchors = [anchor];
 		}
 	}
