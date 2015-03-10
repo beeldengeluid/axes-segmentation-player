@@ -1,0 +1,22 @@
+{
+ "ID": "123124asfwr234", // unchanged
+ "description": "I want to find information on the Dutch royal family.", // unchanged
+ "userID" : "",
+ "relevant": [
+    { // time adjusted according to UI
+      "videoURL": "http://",
+      "keyframeURL": "http://",
+      "start": 12101, // time in milli seconds
+      "end": 12512, //
+      "anchors": [   // new item containing the anchors
+      {
+          "start": 213, // time in milliseconds
+          "end": 123,// time in milliseconds
+          "anchorLable":,
+          "descriptionIdealLink":
+      }
+
+      ]
+  }
+  ]
+}

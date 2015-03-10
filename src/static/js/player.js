@@ -5,6 +5,7 @@ var jw = null;
 var _start = 0;
 var _end = 0;
 var _screenScale = 0;
+var _videos = [];
 
 $(document).ready( function(){
     //Get the canvas &
@@ -93,6 +94,22 @@ function setManualEnd() {
 }
 
 /***********************************************************************************
+ * video select functions
+ **********************************************************************************/
+
+function toPrettyVideoName(videoUrl) {
+	if (videoUrl.indexOf('/') != -1) {
+		var u_arr = videoUrl.split('/');
+		return u_arr[u_arr.length -1];
+	}
+	return videoUrl;
+}
+
+function selectVideo(index) {
+	initPlayer(_videos[index].videoURL);
+}
+
+/***********************************************************************************
  * timebar functions
  **********************************************************************************/
 
@@ -142,19 +159,47 @@ function formatTime(t) {
  **********************************************************************************/
 
 function init() {
-	initPlayer();
+	console.debug(_videoData);
+	initVideoData();
+	initPlayer(_videos[0].videoURL);
+	initTabs();
 	initTimebar();
 	initKeyBindings();
 }
 
-function initPlayer() {
+function initVideoData() {
+	if(_videoData) {
+		var html = [];
+		html.push('<ul class="list-group">');
+		$.each(_videoData['relevant'], function(index, value) {
+			console.debug(value);
+			_videos.push(value);//add to the list, reference by index (of list elements)
+			html.push('<li class="list-group-item" onclick="selectVideo('+index+');">');
+			html.push('<a href="#">' + toPrettyVideoName(value.videoURL) + '</a></li>');
+		});
+		html.push('</ul>');
+		$('#fragments').html(html.join(''));
+	} else {
+		alert('You have to post some video data in order for this page to load');
+		document.location.href = '/axes-segmentation-player';
+	}
+}
+
+function initTabs() {
+	$('#tabs a').click(function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+}
+
+function initPlayer(videoUrl, imageUrl) {
 	console.debug('initializing the player...');
-	//console.debug(jwplayer());
+	//"http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm"
 	jw = jwplayer("video_player").setup({
-		file: "http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm",
+		file: videoUrl,
 		width:'100%',
-		controls : false
-		//image: "/uploads/myPoster.jpg"
+		controls : false,
+		image: imageUrl
 	}).onTime(updateBar).onResize(onResizePlayer);
 }
 
