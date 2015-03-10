@@ -255,7 +255,7 @@
 	</div>
 
 	<script>
-	var _videoData = JSON.parse(<?php echo json_decode($this->data); ?>)
+	var _videoData = JSON.parse(<?php echo $this->data; ?>)
 	</script>
 
 	<script src="./static/js/jquery.min.js"></script>
