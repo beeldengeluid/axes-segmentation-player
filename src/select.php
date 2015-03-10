@@ -22,6 +22,8 @@ $tpl = new Savant3();
 
 $data = $_POST['data'];
 
+$data = str_replace('\\', '', $data);
+
 //echo $data;
 
 $tpl->data = $data;
