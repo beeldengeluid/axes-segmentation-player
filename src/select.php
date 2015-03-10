@@ -22,8 +22,8 @@ $tpl = new Savant3();
 
 $data = $_POST['data'];
 
-//echo $data;
+echo $data;
 
-$tpl->data = $data;
-$tpl->display('templates/segmentvideo.tpl.php');
+//$tpl->data = $data;
+//$tpl->display('templates/segmentvideo.tpl.php');
 ?>
