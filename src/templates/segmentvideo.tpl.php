@@ -255,7 +255,7 @@
 	</div>
 
 	<script>
-	var _videoData = <?php echo $this->data; ?>
+	var _videoData = eval(<?php echo $this->data; ?>)
 	</script>
 
 	<script src="./static/js/jquery.min.js"></script>
