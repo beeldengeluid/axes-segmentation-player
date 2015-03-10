@@ -6,6 +6,14 @@ var _start = 0;
 var _end = 0;
 var _screenScale = 0;
 var _videos = [];
+var _fragmentMode = false;
+var _anchors = {};
+
+
+
+var _curVideoIndex = 0;
+
+var _currentClip = null;
 
 $(document).ready( function(){
     //Get the canvas &
@@ -19,11 +27,7 @@ $(document).ready( function(){
     function respondCanvas(){
         c.attr('width', $(container).width() ); //max width
         c.attr('height', $(container).height() ); //max height
-
-        //Call a function to redraw other content (texts, images etc)
     }
-
-    //Initial call
     respondCanvas();
     init();
 
@@ -33,14 +37,22 @@ $(document).ready( function(){
  * player controllers
  **********************************************************************************/
 
-function setStart() {
-	_start = jw.getPosition();
+function setStart(start) {
+	if(start == undefined) {
+		_start = jw.getPosition();
+	} else {
+		_start = start;
+	}
 	$('#start_time').val(formatTime(_start));
 	updateBar();
 }
 
-function setEnd() {
-	_end = jw.getPosition();
+function setEnd(end) {
+	if(end == undefined) {
+		_end = jw.getPosition();
+	} else {
+		_end = end;
+	}
 	$('#end_time').val(formatTime(_end));
 	updateBar();
 }
@@ -67,12 +79,144 @@ function scaleScreen(enlarge) {
 	} else {
 		jw.resize(-50, -50);
 	}
+}
 
+/***********************************************************************************
+ * player event handlers
+ **********************************************************************************/
+
+function onPlayerTime(e) {
+	updateBar();
 }
 
 function onResizePlayer(e) {
-	console.debug('resizzzze');
-	console.debug(e);
+
+}
+
+function onPlayerReady(e) {
+	jw.play();
+}
+
+/***********************************************************************************
+ * anchor functions
+ **********************************************************************************/
+
+function updateAnchors() {
+	var html = [];
+	html.push('<ul class="list-group">');
+	$.each(_videoData['relevant'], function(index, value) {
+		console.debug(value);
+		_videos.push(value);//add to the list, reference by index (of list elements)
+		html.push('<li class="list-group-item" onclick="selectVideo('+index+');">');
+		html.push('<a href="#">' + value.title + '</a></li>');
+	});
+	html.push('</ul>');
+	$('#fragments').html(html.join(''));
+}
+
+function test() {
+	var buttonText = $("#edit_mode").text();
+	_fragmentMode = buttonText == 'Edit anchors';
+	selectVideo(_curVideoIndex, _fragmentMode);
+	initTimebar(_fragmentMode);
+	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Edit anchors');
+}
+
+/***********************************************************************************
+ * timebar functions
+ **********************************************************************************/
+
+function updateBar() {
+	var c = document.getElementById("timebar_canvas");
+	var dur = -1;
+	if(_fragmentMode) {
+		dur = _end - _start;
+		console.debug('DURATION= ' + dur);
+	} else {
+		dur = jw.getDuration();
+	}
+	if(_fragmentMode) {
+		var t = jw.getPosition();
+		var dt = t - _start;
+		var formattedTime = formatTime(dt);//or show delta time?
+		var elapsed = c.width / 100 * (dt / (dur / 100));
+		//var startPoint = c.width / 100 * (_start / (dur / 100));
+		//var endPoint = c.width / 100 * (_end / (dur / 100));
+		var ctx = c.getContext("2d");
+		ctx.clearRect (0, 0, c.width, c.height);
+		ctx.fillStyle = "#FF0000";
+		ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
+		/*
+		ctx.fillStyle = "#00FF00";
+		ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
+		ctx.fillStyle = "#FFFF00";
+		ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
+		*/
+		ctx.font = "20px Verdana";
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillText(formattedTime, 10, c.height - 5);
+
+
+	} else {
+		var t = jw.getPosition();
+		var formattedTime = formatTime(t);
+		var elapsed = c.width / 100 * (t / (dur / 100));
+		var startPoint = c.width / 100 * (_start / (dur / 100));
+		var endPoint = c.width / 100 * (_end / (dur / 100));
+		var ctx = c.getContext("2d");
+		ctx.clearRect (0, 0, c.width, c.height);
+		ctx.fillStyle = "#FF0000";
+		ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
+		ctx.fillStyle = "#00FF00";
+		ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
+		ctx.fillStyle = "#FFFF00";
+		ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
+		ctx.font = "20px Verdana";
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillText(formattedTime, 10, c.height - 5);
+	}
+}
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+}
+
+/***********************************************************************************
+ * playout functions
+ **********************************************************************************/
+
+function updateVideoMetadata(videoObj) {
+	$('#video_title').text('Now playing: ' + videoObj.title);
+}
+
+function playClip(videoObj) {
+	console.debug('playing clip');
+	updateVideoMetadata(videoObj);
+	jw = jwplayer("video_player").setup({
+		file: videoObj.videoURL,
+		width:'100%',
+		controls : false,
+		image: null
+	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady);
+	setStart(videoObj.start / 1000);
+	setEnd(videoObj.end / 1000);
+}
+
+function playFragment(videoObj) {
+	console.debug('playing fragment only: ' + videoObj.start + ' ' + videoObj.end);
+	updateVideoMetadata(videoObj);
+	_start = videoObj.start / 1000;
+	_end = videoObj.end / 1000;
+	jw = jwplayer("video_player").setup({
+		file: videoObj.videoURL + '?t=' + _start + ',' + _end,
+		width:'100%',
+		controls : false,
+		image: null
+	}).onTime(onPlayerTime).onResize(onResizePlayer);
 }
 
 /***********************************************************************************
@@ -105,41 +249,18 @@ function toPrettyVideoName(videoUrl) {
 	return videoUrl;
 }
 
+function changeVideo(elm) {
+	selectVideo($('#video_select option:selected').val());
+}
+
 function selectVideo(index) {
-	initPlayer(_videos[index]);
-}
-
-/***********************************************************************************
- * timebar functions
- **********************************************************************************/
-
-function updateBar(e) {
-	var c = document.getElementById("timebar_canvas");
-	var dur = jw.getDuration();
-	var t = jw.getPosition();
-	var formattedTime = formatTime(t);
-	var elapsed = c.width / 100 * (t / (dur / 100));
-	var startPoint = c.width / 100 * (_start / (dur / 100));
-	var endPoint = c.width / 100 * (_end / (dur / 100));
-	var ctx = c.getContext("2d");
-	ctx.clearRect (0, 0, c.width, c.height);
-	ctx.fillStyle = "#FF0000";
-	ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
-	ctx.fillStyle = "#00FF00";
-	ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
-	ctx.fillStyle = "#FFFF00";
-	ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
-	ctx.font = "20px Verdana";
-	ctx.fillStyle = "#FFFFFF";
-	ctx.fillText(formattedTime, 10, c.height - 5);
-}
-
-function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
-    };
+	_curVideoIndex = index;
+	_currentClip = _videos[_curVideoIndex];
+	if(_fragmentMode) {
+		playFragment(_currentClip);
+	} else {
+		playClip(_currentClip);
+	}
 }
 
 /***********************************************************************************
@@ -161,7 +282,7 @@ function formatTime(t) {
 function init() {
 	console.debug(_videoData);
 	initVideoData();
-	initPlayer(_videos[0]);
+	selectVideo(_curVideoIndex);
 	initTabs();
 	initTimebar();
 	initKeyBindings();
@@ -169,16 +290,11 @@ function init() {
 
 function initVideoData() {
 	if(_videoData) {
-		var html = [];
-		html.push('<ul class="list-group">');
+		$('#description').text('Your interest: ' + _videoData['description']);
+		//fill the list of videos
 		$.each(_videoData['relevant'], function(index, value) {
-			console.debug(value);
-			_videos.push(value);//add to the list, reference by index (of list elements)
-			html.push('<li class="list-group-item" onclick="selectVideo('+index+');">');
-			html.push('<a href="#">' + toPrettyVideoName(value.videoURL) + '</a></li>');
+			_videos.push(value);
 		});
-		html.push('</ul>');
-		$('#fragments').html(html.join(''));
 	} else {
 		alert('You have to post some video data in order for this page to load');
 		//document.location.href = '/axes-segmentation-player';
@@ -192,29 +308,28 @@ function initTabs() {
 	});
 }
 
-function initPlayer(videoObj, imageUrl) {
+function initTimebar(fragmentMode) {
+	//first unbind any existing events from the canvas
+	$('#timebar_canvas').unbind( "click" );
 
-	console.debug('initializing the player...');
-	//"http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm"
-	_start = videoObj.start / 1000;
-	_end = videoObj.end / 1000;
-	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL,
-		width:'100%',
-		controls : false,
-		image: imageUrl
-	}).onTime(updateBar).onResize(onResizePlayer);
-}
-
-function initTimebar() {
-	$('#timebar_canvas').click(function(e) {
-		var c = document.getElementById("timebar_canvas");
-		var mousePos = getMousePos(c, e);
-		var dur = jw.getDuration();
-		var pos = dur / 100 * (mousePos.x / (c.width / 100));
-		console.debug(mousePos.x + ' ' + c.width + ' ' + (c.width / 100));
-		jw.seek(pos);
-	});
+	//then bind a new one depending on the edit mode (fragmentMode)
+	if(_fragmentMode) {
+		$('#timebar_canvas').click(function(e) {
+			var c = document.getElementById("timebar_canvas");
+			var mousePos = getMousePos(c, e);
+			var dur = _end - _start;
+			var pos = dur / 100 * (mousePos.x / (c.width / 100));
+			jw.seek(_start + pos);
+		});
+	} else {
+		$('#timebar_canvas').click(function(e) {
+			var c = document.getElementById("timebar_canvas");
+			var mousePos = getMousePos(c, e);
+			var dur = jw.getDuration();
+			var pos = dur / 100 * (mousePos.x / (c.width / 100));
+			jw.seek(pos);
+		});
+	}
 }
 
 function initKeyBindings() {

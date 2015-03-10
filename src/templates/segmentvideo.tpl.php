@@ -132,9 +132,15 @@
 		<div class="container">
 
 			<div class="row">
+				<div class="col-md-12">
+					<h3 id="description"></h3>
+					<h4 id="video_title"></h4>
+				</div>
+			</div>
+
+			<div class="row">
 
 				<div class="col-md-8">
-
 
 					<div id="video_container">
 						<div id="video_player">Loading the player...</div>
@@ -186,65 +192,84 @@
 
 					<br>
 
-					<div class="text-center">
-						<input type="text" class="form-control" placeholder="Anchor title">
-						<br>
-						<button type="button" class="btn btn-success">Create Anchor</button>
-					</div>
 
 				</div>
 
 				<div class="col-md-4">
-
-					<div id="tabs" role="tabpanel">
-
-
-						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active">
-								<a href="#fragments" aria-controls="fragments" role="tab" data-toggle="tab">Home</a>
-							</li>
-							<li role="presentation">
-								<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Profile</a>
-							</li>
-						</ul>
-
-						<div class="tab-content">
-
-							<!-- LIST OF FRAGMENTS TAB-->
-							<div role="tabpanel" class="tab-pane active" id="fragments">
-								<!-- filled on the client-->
-							</div>
-
-							<!-- HELP TAB -->
-							<div role="tabpanel" class="tab-pane" id="help">
-								<h3>Help - Keyboard shortcuts</h3>
-								<div class="well">
-									<strong>Standard player controls</strong><br>
-									Press <kbd>space</kbd> to play/pause the video.
-								</div>
-								<div class="well">
-									<strong>Fast forward &amp; rewind</strong><br>
-									Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br><br>
-									To rewind, hold <kbd>SHIFT</kbd> plus a number. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.
-
-									Use the left and right arrow to fast forward or rewind by 1 minute:<br><br>
-									Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br><br>
-									Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
-								</div>
-
-								<div class="well">
-									<strong>Start &amp; end of clip</strong><br>
-									To mark the start of the clip, press: <kbd>SHIFT+s</kbd><br>
-									To mark the end of the clip, press: <kbd>SHIFT+e</kbd>
-									To go to the start of your clip selection, press: <kbd>CTRL+s</kbd><br>
-									To go to the end of your clip selection, press: <kbd>CTRL+e</kbd>
-								</div>
-							</div>
-
+					<div class="row">
+						<div class="col-md-12">
+							<strong>Select a clip to edit:</strong>
+							<select id="video_select" onchange="changeVideo();">
+								<?php foreach ($this->vd->relevant as $key => $val): ?>
+		                			<option value="<?php echo $key;?>">
+		                				<?php echo $val->title;?>
+		                			</option>
+		            			<?php endforeach; ?>
+							</select>
 						</div>
-
 					</div>
 
+					<div class="row">
+						<div class="col-md-12">
+							<div class="checkbox">
+								<label>
+									<button id="edit_mode" type="button" onclick="test()">Edit anchors</button>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<div class="row">
+						<div class="col-md-12">
+							<div id="tabs" role="tabpanel">
+								<ul class="nav nav-tabs" role="tablist">
+									<li role="presentation" class="active">
+										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Anchors</a>
+									</li>
+									<li role="presentation">
+										<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Keyboard shortcuts</a>
+									</li>
+								</ul>
+
+								<div class="tab-content">
+
+									<!-- LIST OF ANCHORS TAB-->
+									<div role="tabpanel" class="tab-pane active" id="anchors">
+										<!-- filled on the client-->
+									</div>
+
+									<!-- HELP TAB -->
+									<div role="tabpanel" class="tab-pane" id="help">
+										<h3>Keyboard shortcuts</h3>
+										<div class="well">
+											<strong>Standard player controls</strong><br>
+											Press <kbd>space</kbd> to play/pause the video.
+										</div>
+										<div class="well">
+											<strong>Fast forward &amp; rewind</strong><br>
+											Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br><br>
+											To rewind, hold <kbd>SHIFT</kbd> plus a number. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.
+
+											Use the left and right arrow to fast forward or rewind by 1 minute:<br><br>
+											Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br><br>
+											Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
+										</div>
+
+										<div class="well">
+											<strong>Start &amp; end of clip</strong><br>
+											To mark the start of the clip, press: <kbd>SHIFT+s</kbd><br>
+											To mark the end of the clip, press: <kbd>SHIFT+e</kbd>
+											To go to the start of your clip selection, press: <kbd>CTRL+s</kbd><br>
+											To go to the end of your clip selection, press: <kbd>CTRL+e</kbd>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
 
 				</div>
 

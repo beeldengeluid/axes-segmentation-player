@@ -4,12 +4,14 @@ var _input = {
  "relevant": [
     {
       "videoURL": "http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm",
+      "title" : "To buy or not to buy",
       "keyframeURL": "",
       "start": 100000,
       "end": 200000,
     },
     {
       "videoURL": "http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080621_200000_bbctwo_andrew_marrs_history_of.webm",
+      "title" : "The history of Andrew Marss",
       "keyframeURL": "",
       "start": 100000,
       "end": 120000,

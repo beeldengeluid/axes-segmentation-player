@@ -26,6 +26,4 @@
 	<script src="./static/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./static/js/select.js"></script>
 
-
-
 </html>
