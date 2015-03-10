@@ -192,6 +192,14 @@
 
 					<br>
 
+					<div class="row">
+						<div class="text-center">
+							<button class="btn btn-primary" type="button" onclick="saveAnchor()">
+								Save anchor
+							</button>
+						</div>
+					</div>
+
 
 				</div>
 
@@ -213,7 +221,7 @@
 						<div class="col-md-12">
 							<div class="checkbox">
 								<label>
-									<button id="edit_mode" type="button" onclick="test()">Edit anchors</button>
+									<button id="edit_mode" type="button" onclick="switchMode()">Edit anchors</button>
 								</label>
 							</div>
 						</div>

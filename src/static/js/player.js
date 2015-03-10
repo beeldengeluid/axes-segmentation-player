@@ -10,7 +10,6 @@ var _fragmentMode = false;
 var _anchors = {};
 
 
-
 var _curVideoIndex = 0;
 
 var _currentClip = null;
@@ -114,12 +113,24 @@ function updateAnchors() {
 	$('#fragments').html(html.join(''));
 }
 
-function test() {
+function saveAnchor() {
+
+}
+
+function switchMode() {
 	var buttonText = $("#edit_mode").text();
 	_fragmentMode = buttonText == 'Edit anchors';
+	//if going into the mode where anchors can be edited, save the boundaries of the clip
+	if(_fragmentMode) {
+		_videos[_curVideoIndex].start = _start * 1000;//ms!
+		_videos[_curVideoIndex].end = _end * 1000;//ms!
+	} else {
+		//TODO save the anchors to the current clip
+	}
 	selectVideo(_curVideoIndex, _fragmentMode);
 	initTimebar(_fragmentMode);
 	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Edit anchors');
+	updateBar();
 }
 
 /***********************************************************************************
@@ -129,35 +140,33 @@ function test() {
 function updateBar() {
 	var c = document.getElementById("timebar_canvas");
 	var dur = -1;
+
 	if(_fragmentMode) {
-		dur = _end - _start;
-		console.debug('DURATION= ' + dur);
-	} else {
-		dur = jw.getDuration();
-	}
-	if(_fragmentMode) {
+		var start = _videos[_curVideoIndex].start / 1000;
+		var end = _videos[_curVideoIndex].end / 1000;
+		var dur = end - start;
+		console.debug('DURATION= ' + dur + ' start=' + start + 'end=' + end);
 		var t = jw.getPosition();
-		var dt = t - _start;
-		var formattedTime = formatTime(dt);//or show delta time?
+		var dt = t - start;
+		var formattedTime = formatTime(t);
 		var elapsed = c.width / 100 * (dt / (dur / 100));
-		//var startPoint = c.width / 100 * (_start / (dur / 100));
-		//var endPoint = c.width / 100 * (_end / (dur / 100));
+		var startPoint = c.width / 100 * ((_start - dur) / (dur / 100));
+		var endPoint = c.width / 100 * ((_end - dur) / (dur / 100));
 		var ctx = c.getContext("2d");
 		ctx.clearRect (0, 0, c.width, c.height);
 		ctx.fillStyle = "#FF0000";
 		ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
-		/*
 		ctx.fillStyle = "#00FF00";
 		ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
 		ctx.fillStyle = "#FFFF00";
 		ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
-		*/
 		ctx.font = "20px Verdana";
-		ctx.fillStyle = "#FFFFFF";
+		ctx.fillStyle = "#FFFF00";
 		ctx.fillText(formattedTime, 10, c.height - 5);
 
 
 	} else {
+		var dur = jw.getDuration();
 		var t = jw.getPosition();
 		var formattedTime = formatTime(t);
 		var elapsed = c.width / 100 * (t / (dur / 100));
@@ -209,8 +218,8 @@ function playClip(videoObj) {
 function playFragment(videoObj) {
 	console.debug('playing fragment only: ' + videoObj.start + ' ' + videoObj.end);
 	updateVideoMetadata(videoObj);
-	_start = videoObj.start / 1000;
-	_end = videoObj.end / 1000;
+	_start = -1;
+	_end = -1
 	jw = jwplayer("video_player").setup({
 		file: videoObj.videoURL + '?t=' + _start + ',' + _end,
 		width:'100%',
@@ -317,9 +326,11 @@ function initTimebar(fragmentMode) {
 		$('#timebar_canvas').click(function(e) {
 			var c = document.getElementById("timebar_canvas");
 			var mousePos = getMousePos(c, e);
-			var dur = _end - _start;
+			var start = _videos[_curVideoIndex].start / 1000;
+			var end = _videos[_curVideoIndex].end / 1000;
+			var dur = end - start;
 			var pos = dur / 100 * (mousePos.x / (c.width / 100));
-			jw.seek(_start + pos);
+			jw.seek(start + pos);
 		});
 	} else {
 		$('#timebar_canvas').click(function(e) {
