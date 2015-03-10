@@ -5,14 +5,14 @@ var _input = {
     {
       "videoURL": "http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm",
       "keyframeURL": "",
-      "start": 12123,
-      "end": 12314,
+      "start": 100000,
+      "end": 200000,
     },
     {
       "videoURL": "http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080621_200000_bbctwo_andrew_marrs_history_of.webm",
       "keyframeURL": "",
-      "start": 12123,
-      "end": 12314,
+      "start": 100000,
+      "end": 120000,
     }
  ]
 }

@@ -106,7 +106,7 @@ function toPrettyVideoName(videoUrl) {
 }
 
 function selectVideo(index) {
-	initPlayer(_videos[index].videoURL);
+	initPlayer(_videos[index]);
 }
 
 /***********************************************************************************
@@ -161,7 +161,7 @@ function formatTime(t) {
 function init() {
 	console.debug(_videoData);
 	initVideoData();
-	initPlayer(_videos[0].videoURL);
+	initPlayer(_videos[0]);
 	initTabs();
 	initTimebar();
 	initKeyBindings();
@@ -192,11 +192,14 @@ function initTabs() {
 	});
 }
 
-function initPlayer(videoUrl, imageUrl) {
+function initPlayer(videoObj, imageUrl) {
+
 	console.debug('initializing the player...');
 	//"http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm"
+	_start = videoObj.start / 1000;
+	_end = videoObj.end / 1000;
 	jw = jwplayer("video_player").setup({
-		file: videoUrl,
+		file: videoObj.videoURL,
 		width:'100%',
 		controls : false,
 		image: imageUrl
