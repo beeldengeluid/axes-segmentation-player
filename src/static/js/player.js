@@ -181,7 +181,7 @@ function initVideoData() {
 		$('#fragments').html(html.join(''));
 	} else {
 		alert('You have to post some video data in order for this page to load');
-		document.location.href = '/axes-segmentation-player';
+		//document.location.href = '/axes-segmentation-player';
 	}
 }
 
