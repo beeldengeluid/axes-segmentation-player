@@ -11,6 +11,7 @@ var _fragmentMode = false;
 
 
 var _curVideoIndex = 0;
+var _currentAnchorIndex = -1;
 
 var _currentClip = null;
 
@@ -106,28 +107,39 @@ function updateAnchors() {
 	html.push('<ul class="list-group">');
 	$.each(_videos[_curVideoIndex].anchors, function(index, value) {
 		console.debug(value);
-		html.push('<li class="list-group-item" onclick="selectVideo('+index+');">');
+		html.push('<li class="list-group-item" onclick="loadAnchor('+index+');">');
 		html.push('<a href="#">' + value.label + '</a></li>');
 	});
 	html.push('</ul>');
 	$('#anchors').html(html.join(''));
 }
 
-function saveAnchor(index) {
+function loadAnchor(index) {
+	var anchor = _videos[_curVideoIndex].anchors[index];
+	_currentAnchorIndex = index;
+	_start = anchor.start / 1000;
+	_end = anchor.end / 1000;
+}
+
+function saveAnchor() {
 	var anchor = {
 		start : _start * 1000,
 		end : _end * 1000,
 		label : 'test',
       	descriptionIdealLink : 'test2'
 	}
-	if(index) {
-		//TODO update
-	}
-	if(_videos[_curVideoIndex].anchors) {
-		_videos[_curVideoIndex].anchors.push(anchor);
+	if(_currentAnchorIndex != -1) {
+		_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
 	} else {
-		_videos[_curVideoIndex].anchors = [anchor];
+		if(_videos[_curVideoIndex].anchors) {
+			_videos[_curVideoIndex].anchors.push(anchor);
+		} else {
+			_videos[_curVideoIndex].anchors = [anchor];
+		}
 	}
+	_start = -1;
+	_end = -1;
+	_currentAnchorIndex = -1;
 	updateAnchors();
 }
 
