@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 // Load the Savant3 class file and create an instance.
 require_once 'Savant3.php';
 $tpl = new Savant3();
