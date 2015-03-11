@@ -2,8 +2,8 @@
 jwplayer.key = 'SWCiaYWnJ9Ri4wKfADRn3N40bPrMf2/GiO8iGQ==';
 var videoUrl = 'http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm';
 var jw = null;
-var _start = 0;
-var _end = 0;
+var _start = -1;
+var _end = -1;
 var _screenScale = 0;
 var _videos = [];
 var _fragmentMode = false;
@@ -43,28 +43,75 @@ $(document).ready( function(){
 });
 
 /***********************************************************************************
+ * helper functions
+ **********************************************************************************/
+
+function formatTime(t) {
+	var pt = moment.duration(t * 1000);
+	var h = pt.hours() < 10 ? '0' + pt.hours() : pt.hours();
+	var m = pt.minutes() < 10 ? '0' + pt.minutes() : pt.minutes();
+	var s = pt.seconds() < 10 ? '0' + pt.seconds() : pt.seconds();
+	return h + ':' + m + ':' + s;
+}
+
+function validateDuration(start, end) {
+	if(end == -1 || start == -1) {
+		return true;
+	}
+	if(end - start < 15 && !_fragmentMode) {
+		alert('A clip must be at least 15 seconds long');
+		return false;
+	} else if(end - start < 1 && _fragmentMode) {
+		alert('An anchor must be at least 1 seconds long');
+		return false;
+	}
+	return true;
+}
+
+/***********************************************************************************
  * player controllers
  **********************************************************************************/
 
 function setStart(start) {
+	var temp = -1;
 	if(start == undefined) {
-		_start = jw.getPosition();
-		console.debug('JW pos: ' + _start);
+		temp = jw.getPosition();
 	} else {
-		_start = start;
+		temp = start;
 	}
-	$('#start_time').val(formatTime(_start));
-	updateBar();
+	if((_end != -1 && temp < _end) || _end == -1) {
+		if(validateDuration(temp, _end)) {
+			_start = temp;
+			if(!_fragmentMode) {
+				$('#video_start').text(formatTime(_start));
+			}
+			$('#start_time').val(formatTime(_start));
+			updateBar();
+		}
+	} else {
+		alert('The start must be smaller than the end time');
+	}
 }
 
 function setEnd(end) {
+	var temp = -1;
 	if(end == undefined) {
-		_end = jw.getPosition();
+		temp = jw.getPosition();
 	} else {
-		_end = end;
+		temp = end;
 	}
-	$('#end_time').val(formatTime(_end));
-	updateBar();
+	if((_start != -1 && temp > _start) || _start == -1) {
+		if(validateDuration(_start, temp)) {
+			_end = temp;
+			if(!_fragmentMode) {
+				$('#video_end').text(formatTime(_end));
+			}
+			$('#end_time').val(formatTime(_end));
+			updateBar();
+		}
+	} else {
+		alert('The end time must be bigger than the start time');
+	}
 }
 
 function playStart() {
@@ -115,8 +162,14 @@ function updateAnchors() {
 	var html = [];
 	html.push('<ul class="list-group">');
 	$.each(_videos[_curVideoIndex].anchors, function(index, value) {
-		html.push('<li class="list-group-item" onclick="loadAnchor('+index+');">');
-		html.push('<a href="#">' + value.title + '</a></li>');
+		html.push('<li class="list-group-item">');
+		html.push('<a onclick="loadAnchor('+index+');"><abbr>' + value.title + '</abbr>&nbsp;');
+		html.push(formatTime(value.start / 1000) + ' - ');
+		html.push(formatTime(value.end / 1000));
+		html.push('</a>');
+		html.push('&nbsp;<a onclick="deleteAnchor('+index+');">');
+		html.push('<i class="glyphicon glyphicon-remove"></i>');
+		html.push('</li>');
 	});
 	html.push('</ul>');
 	$('#anchors').html(html.join(''));
@@ -127,31 +180,46 @@ function loadAnchor(index) {
 	_currentAnchorIndex = index;
 	_start = anchor.start / 1000;
 	_end = anchor.end / 1000;
-	$('#anchor_title').text(anchor.title);
-	$('#anchor_desc').text(anchor.description);
+	$('#anchor_title').val(anchor.title);
+	$('#anchor_desc').val(anchor.description);
+}
+
+function deleteAnchor(index) {
+	_videos[_curVideoIndex].anchors.splice(index, 1);
+	updateAnchors();
 }
 
 function saveAnchor() {
-	var anchor = {
-		start : _start * 1000,
-		end : _end * 1000,
-		title : $('#anchor_title').val(),
-      	description : $('#anchor_desc').val()
-	}
-	if(_currentAnchorIndex != -1) {
-		_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
+	if($('#anchor_title').val().trim() == '' || $('#anchor_title').val().trim() == '') {
+		alert('Please enter a title and a description for the anchor');
 	} else {
-		if(_videos[_curVideoIndex].anchors) {
-			_videos[_curVideoIndex].anchors.push(anchor);
-		} else {
-			_videos[_curVideoIndex].anchors = [anchor];
+		var anchor = {
+			start : _start * 1000,
+			end : _end * 1000,
+			title : $('#anchor_title').val(),
+	      	description : $('#anchor_desc').val()
 		}
+		if(_currentAnchorIndex != -1) {
+			_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
+		} else {
+			if(_videos[_curVideoIndex].anchors) {
+				_videos[_curVideoIndex].anchors.push(anchor);
+			} else {
+				_videos[_curVideoIndex].anchors = [anchor];
+			}
+		}
+		_start = -1;
+		_end = -1;
+		$('#anchor_title').val('');
+		$('#anchor_desc').val('');
+		_currentAnchorIndex = -1;
+		updateAnchors();
 	}
-	_start = -1;
-	_end = -1;
-	_currentAnchorIndex = -1;
-	updateAnchors();
 }
+
+/***********************************************************************************
+ * switch mode
+ **********************************************************************************/
 
 function switchMode() {
 	var buttonText = $("#edit_mode").text();
@@ -165,7 +233,7 @@ function switchMode() {
 		$('#anchor_save').css('visibility', 'hidden');
 		//TODO save the anchors to the current clip
 	}
-	selectVideo(_curVideoIndex, _fragmentMode);
+	selectVideo(_curVideoIndex);
 	initTimebar(_fragmentMode);
 	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Save refinement & Edit anchors');
 	updateBar();
@@ -183,7 +251,6 @@ function updateBar() {
 		var start = _videos[_curVideoIndex].start / 1000;
 		var end = _videos[_curVideoIndex].end / 1000;
 		var dur = end - start;
-		console.debug('DURATION= ' + dur + '('+(_end - _start)+') start=' + start + '('+_start+' )end=' + end + '('+_end+')');
 		var t = jw.getPosition();
 		var dt = t - start;
 		var formattedTime = formatTime(t);
@@ -237,11 +304,11 @@ function getMousePos(canvas, evt) {
  **********************************************************************************/
 
 function updateVideoMetadata(videoObj) {
-	$('#video_title').text('Current video: ' + videoObj.title);
+	$('#video_start').text(formatTime(videoObj.start / 1000));
+	$('#video_end').text(formatTime(videoObj.end / 1000));
 }
 
 function playClip(videoObj) {
-	console.debug('playing clip: ' + videoObj.start + ' ' + videoObj.end);
 	updateVideoMetadata(videoObj);
 	jw = jwplayer("video_player").setup({
 		file: videoObj.videoURL + '#t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
@@ -251,19 +318,6 @@ function playClip(videoObj) {
 	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady);
 	setStart(videoObj.start / 1000);
 	setEnd(videoObj.end / 1000);
-}
-
-function playFragment(videoObj) {
-	console.debug('playing fragment only: ' + videoObj.start + ' ' + videoObj.end);
-	updateVideoMetadata(videoObj);
-	_start = -1;
-	_end = -1
-	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL + '#t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
-		width:'100%',
-		controls : false,
-		image: null
-	}).onTime(onPlayerTime).onResize(onResizePlayer);
 }
 
 /***********************************************************************************
@@ -305,23 +359,7 @@ function changeVideo(elm) {
 function selectVideo(index) {
 	_curVideoIndex = index;
 	_currentClip = _videos[_curVideoIndex];
-	if(_fragmentMode) {
-		playFragment(_currentClip);
-	} else {
-		playClip(_currentClip);
-	}
-}
-
-/***********************************************************************************
- * helper functions
- **********************************************************************************/
-
-function formatTime(t) {
-	var pt = moment.duration(t * 1000);
-	var h = pt.hours() < 10 ? '0' + pt.hours() : pt.hours();
-	var m = pt.minutes() < 10 ? '0' + pt.minutes() : pt.minutes();
-	var s = pt.seconds() < 10 ? '0' + pt.seconds() : pt.seconds();
-	return h + ':' + m + ':' + s;
+	playClip(_currentClip);
 }
 
 /***********************************************************************************
@@ -339,7 +377,7 @@ function init() {
 
 function initVideoData() {
 	if(_videoData) {
-		$('#description').text('You were looking for: "' + _videoData['description'] + '"');
+		$('#description').text('You were looking for: "' + _videoData.description + '"');
 		//fill the list of videos
 		$.each(_videoData['relevant'], function(index, value) {
 			_videos.push(value);

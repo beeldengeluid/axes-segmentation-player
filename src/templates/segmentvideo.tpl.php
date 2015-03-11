@@ -146,6 +146,8 @@
 	               			</option>
 	            		<?php endforeach; ?>
 					</select>
+					<span id="video_start"></span>
+					<span id="video_end"></span>
 				</div>
 			</div>
 
@@ -242,7 +244,7 @@
 							<div id="tabs" role="tabpanel">
 								<ul class="nav nav-tabs" role="tablist">
 									<li role="presentation" class="active">
-										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Anchors</a>
+										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Saved anchors</a>
 									</li>
 									<li role="presentation">
 										<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Keyboard shortcuts</a>
