@@ -1,5 +1,6 @@
 var _input = {
  "ID": "123124asfwr234",
+ "userID" : "dklsfjgbs",
  "description": "I want to find information on the Dutch royal family.",
  "relevant": [
     {

@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <link href="./static/css/main.css" rel="stylesheet" type="text/css">
 
@@ -215,6 +216,9 @@
 								<button id="edit_mode" class="btn btn-primary" onclick="switchMode()">
 									Save refinement &amp; Edit anchors
 								</button>
+								<button class="btn btn-danger" onclick="finish()">
+									Save &amp; finish
+								</button>
 							</div>
 						</div>
 						<div class="col-sm-12">
@@ -298,11 +302,16 @@
 
 	</div>
 
+	<div id="dialog-confirm" title="Save &amp; finish?">
+		Are you sure you want to proceed to the end of this test?
+	</div>
+
 	<script>
 	var _videoData = <?php echo $this->data; ?>
 	</script>
 
 	<script src="./static/js/jquery.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="./static/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./static/js/jwerty/jwerty.js"></script>
 	<script type="text/javascript" src="./static/jwplayer/jwplayer.js"></script>

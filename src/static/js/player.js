@@ -2,6 +2,10 @@
 jwplayer.key = 'SWCiaYWnJ9Ri4wKfADRn3N40bPrMf2/GiO8iGQ==';
 var videoUrl = 'http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm';
 var jw = null;
+
+var _id = null;
+var _userId = null;
+
 var _start = -1;
 var _end = -1;
 var _screenScale = 0;
@@ -194,7 +198,7 @@ function deleteAnchor(index) {
 }
 
 function validateAnchor() {
-	if($('#anchor_title').val().trim().length < 5 || $('#anchor_title').val().trim().length <5) {
+	if($('#anchor_title').val().trim().length < 5 || $('#anchor_desc').val().trim().length <5) {
 		alert('Please enter a title and a description of at least 5 characters each');
 		return false;
 	}
@@ -348,6 +352,23 @@ function setManualEnd() {
 	_end = moment.duration(s).asSeconds();
 	updateBar();
 	jw.seek(_end);
+}
+
+function finish() {
+	$( "#dialog-confirm" ).dialog({
+		resizable: false,
+		height:240,
+		modal: true,
+		buttons: {
+			"Save & finish": function() {
+				$(this).dialog("close");
+				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+			},
+			"Cancel": function() {
+		  		$(this).dialog("close");
+			}
+		}
+    });
 }
 
 /***********************************************************************************
