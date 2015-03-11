@@ -248,10 +248,13 @@
 							<div id="tabs" role="tabpanel">
 								<ul class="nav nav-tabs" role="tablist">
 									<li role="presentation" class="active">
-										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Saved anchors</a>
+										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Anchors</a>
 									</li>
 									<li role="presentation">
-										<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Keyboard shortcuts</a>
+										<a href="#guidelines" aria-controls="guidelines" role="tab" data-toggle="tab">Guidelines</a>
+									</li>
+									<li role="presentation">
+										<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Shortcuts</a>
 									</li>
 								</ul>
 
@@ -285,6 +288,17 @@
 											To mark the end of the clip, press: <kbd>SHIFT+e</kbd>
 											To go to the start of your clip selection, press: <kbd>CTRL+s</kbd><br>
 											To go to the end of your clip selection, press: <kbd>CTRL+e</kbd>
+										</div>
+									</div>
+									<div role="tabpanel" class="tab-pane" id="guidelines">
+										<h3>Guidelines</h3>
+										<div class="well">
+											Link anchors should be created for one of the following reasons:<br>
+											<ul>
+												<li>Linked clips may help users to understand the anchor better.</li>
+												<li>Linked clips may contain relevant information about the anchor, given the current information need.</li>
+												<li>Linked clips may contain information about occurring objects, places, people, and events that appear in this clip.</li>
+											</ul>
 										</div>
 									</div>
 
