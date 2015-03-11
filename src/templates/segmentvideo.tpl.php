@@ -134,9 +134,22 @@
 			<div class="row">
 				<div class="col-md-12">
 					<h3 id="description"></h3>
-					<h4 id="video_title"></h4>
+				</div>
+
+
+				<div class="col-md-12">
+					<span class="video-label">Current video:</span>
+					<select id="video_select" onchange="changeVideo();">
+						<?php foreach ($this->vd->relevant as $key => $val): ?>
+	               			<option value="<?php echo $key;?>">
+	               				<?php echo $val->title;?>
+	               			</option>
+	            		<?php endforeach; ?>
+					</select>
 				</div>
 			</div>
+
+			<br>
 
 			<div class="row">
 
@@ -154,13 +167,15 @@
 					<br>
 
 					<div class="row">
-						<div class="col-sm-5 col-sm-offset-1">
+						<div class="col-sm-6">
 							<div class="input-group">
-								<span class="input-group-addon">Start</span>
+								<span class="input-group-addon start-group">
+									Start
+								</span>
 								<input id="start_time" type="text" class="form-control" placeholder="00:00:00">
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" onclick="setManualStart()" title="When you press this the start time will be set to the time you entered in the input field">
-										Set
+										Save
 									</button>
 									<button class="btn btn-default" type="button" onclick="setStart()" title="When you press this the start time will be same as the current player time">
 										Copy
@@ -171,13 +186,13 @@
 								</span>
 							</div>
 						</div>
-						<div class="col-sm-5">
+						<div class="col-sm-6">
 							<div class="input-group">
-								<span class="input-group-addon">&nbsp;End&nbsp;</span>
+								<span class="input-group-addon end-group">&nbsp;End&nbsp;</span>
 								<input id="end_time" type="text" class="form-control" placeholder="00:00:00">
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" onclick="setManualEnd()" title="When you press this the end time will be set to the time you entered in the input field">
-										Set
+										Save
 									</button>
 									<button class="btn btn-default" type="button" onclick="setEnd()" title="When you press this the end time will be same as the current player time">
 										Copy
@@ -193,41 +208,35 @@
 					<br>
 
 					<div class="row">
-						<div class="text-center">
-							<button class="btn btn-primary" type="button" onclick="saveAnchor()">
-								Save anchor
-							</button>
-						</div>
-					</div>
-
-
-				</div>
-
-				<div class="col-md-4">
-					<div class="row">
-						<div class="col-md-12">
-							<strong>Select a clip to edit:</strong>
-							<select id="video_select" onchange="changeVideo();">
-								<?php foreach ($this->vd->relevant as $key => $val): ?>
-		                			<option value="<?php echo $key;?>">
-		                				<?php echo $val->title;?>
-		                			</option>
-		            			<?php endforeach; ?>
-							</select>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-12">
-							<div class="checkbox">
-								<label>
-									<button id="edit_mode" type="button" onclick="switchMode()">Edit anchors</button>
-								</label>
+						<div class="col-sm-12">
+							<div class="text-right">
+								<button id="edit_mode" class="btn btn-primary" onclick="switchMode()">
+									Save refinement &amp; Edit anchors
+								</button>
 							</div>
+						</div>
+						<div class="col-sm-12">
+							<form id="anchor_save">
+								<div class="form-group">
+									<label for="anchor_title">Title</label>
+									<input id="anchor_title" type="text" class="form-control" placeholder="Enter title">
+								</div>
+								<div class="form-group">
+									<label for="anchor_desc">Description</label>
+									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
+								</div>
+								<button class="btn btn-primary" type="button" onclick="saveAnchor()">
+									Save anchor
+								</button>
+							</form>
 						</div>
 					</div>
 
 					<br>
+
+				</div>
+
+				<div class="col-md-4">
 					<div class="row">
 						<div class="col-md-12">
 							<div id="tabs" role="tabpanel">

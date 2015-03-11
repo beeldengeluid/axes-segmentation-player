@@ -8,8 +8,6 @@ var _screenScale = 0;
 var _videos = [];
 var _fragmentMode = false;
 
-
-
 var _curVideoIndex = 0;
 var _currentAnchorIndex = -1;
 
@@ -29,6 +27,17 @@ $(document).ready( function(){
         c.attr('height', $(container).height() ); //max height
     }
     respondCanvas();
+
+    //make sure to disable the standard button keyevents, so the space bar won't accidentally trigger a button press
+    $('button').keydown(function(event){
+		event.preventDefault();
+    });
+    $('button').keyup(function(event){
+		event.preventDefault();
+    });
+    $('button').keypress(function(event){
+		event.preventDefault();
+    });
     init();
 
 });
@@ -106,9 +115,8 @@ function updateAnchors() {
 	var html = [];
 	html.push('<ul class="list-group">');
 	$.each(_videos[_curVideoIndex].anchors, function(index, value) {
-		console.debug(value);
 		html.push('<li class="list-group-item" onclick="loadAnchor('+index+');">');
-		html.push('<a href="#">' + value.label + '</a></li>');
+		html.push('<a href="#">' + value.title + '</a></li>');
 	});
 	html.push('</ul>');
 	$('#anchors').html(html.join(''));
@@ -119,23 +127,23 @@ function loadAnchor(index) {
 	_currentAnchorIndex = index;
 	_start = anchor.start / 1000;
 	_end = anchor.end / 1000;
+	$('#anchor_title').text(anchor.title);
+	$('#anchor_desc').text(anchor.description);
 }
 
 function saveAnchor() {
 	var anchor = {
 		start : _start * 1000,
 		end : _end * 1000,
-		label : 'anchor ' + (_currentAnchorIndex + 1),
-      	descriptionIdealLink : 'test2'
+		title : $('#anchor_title').val(),
+      	description : $('#anchor_desc').val()
 	}
 	if(_currentAnchorIndex != -1) {
 		_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
 	} else {
 		if(_videos[_curVideoIndex].anchors) {
-			anchor.label = 'anchor ' + (_videos[_curVideoIndex].anchors.length + 1);
 			_videos[_curVideoIndex].anchors.push(anchor);
 		} else {
-			anchor.label = 'anchor 1';
 			_videos[_curVideoIndex].anchors = [anchor];
 		}
 	}
@@ -147,17 +155,19 @@ function saveAnchor() {
 
 function switchMode() {
 	var buttonText = $("#edit_mode").text();
-	_fragmentMode = buttonText == 'Edit anchors';
+	_fragmentMode = buttonText.indexOf('anchors') != -1;
 	//if going into the mode where anchors can be edited, save the boundaries of the clip
 	if(_fragmentMode) {
+		$('#anchor_save').css('visibility', 'visible');
 		_videos[_curVideoIndex].start = _start * 1000;//ms!
 		_videos[_curVideoIndex].end = _end * 1000;//ms!
 	} else {
+		$('#anchor_save').css('visibility', 'hidden');
 		//TODO save the anchors to the current clip
 	}
 	selectVideo(_curVideoIndex, _fragmentMode);
 	initTimebar(_fragmentMode);
-	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Edit anchors');
+	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Save refinement & Edit anchors');
 	updateBar();
 }
 
@@ -227,14 +237,14 @@ function getMousePos(canvas, evt) {
  **********************************************************************************/
 
 function updateVideoMetadata(videoObj) {
-	$('#video_title').text('Now playing: ' + videoObj.title);
+	$('#video_title').text('Current video: ' + videoObj.title);
 }
 
 function playClip(videoObj) {
-	console.debug('playing clip');
+	console.debug('playing clip: ' + videoObj.start + ' ' + videoObj.end);
 	updateVideoMetadata(videoObj);
 	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL,
+		file: videoObj.videoURL + '#t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
 		width:'100%',
 		controls : false,
 		image: null
@@ -249,7 +259,7 @@ function playFragment(videoObj) {
 	_start = -1;
 	_end = -1
 	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL + '?t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
+		file: videoObj.videoURL + '#t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
 		width:'100%',
 		controls : false,
 		image: null
@@ -265,6 +275,7 @@ function setManualStart() {
 	console.debug(s);
 	_start = moment.duration(s).asSeconds();
 	updateBar();
+	jw.seek(_start);
 }
 
 function setManualEnd() {
@@ -272,6 +283,7 @@ function setManualEnd() {
 	console.debug(s);
 	_end = moment.duration(s).asSeconds();
 	updateBar();
+	jw.seek(_end);
 }
 
 /***********************************************************************************
@@ -327,7 +339,7 @@ function init() {
 
 function initVideoData() {
 	if(_videoData) {
-		$('#description').text('Your interest: ' + _videoData['description']);
+		$('#description').text('You were looking for: "' + _videoData['description'] + '"');
 		//fill the list of videos
 		$.each(_videoData['relevant'], function(index, value) {
 			_videos.push(value);
@@ -371,99 +383,110 @@ function initTimebar(fragmentMode) {
 	}
 }
 
+//this function checks if the user is using any of the input fields. If so the keyboard shortcuts must be disabled
+function checkFocus(f, args) {
+	if($('input').is(':focus')) {
+		return true;
+	}
+	if(f) {
+		f(args);
+	}
+}
+
 function initKeyBindings() {
 	//arrow key shortcuts
 	jwerty.key('left', function() {
-		rw(60);
+		checkFocus(rw, 60);
 	});
 	jwerty.key('right', function() {
-		ff(60);
+		checkFocus(ff, 60);
 	});
-	jwerty.key('q', function() {
-		scaleScreen();
-	});
-	jwerty.key('w', function() {
-		scaleScreen(false);
+
+	//switch mode
+	jwerty.key('m', function() {
+		checkFocus(switchMode);
 	});
 
 	//pause & play shortcut
 	jwerty.key('space', function() {
-		if(jw.getState() == 'PLAYING') {
-			jw.pause();
-		} else {
-			jw.play();
+		if(!checkFocus()) {
+			if(jw.getState() == 'PLAYING') {
+				jw.pause();
+			} else {
+				jw.play();
+			}
 		}
 	});
 
 	//start & end shortcuts
 	jwerty.key('shift+s', function() {
-		setStart();
+		checkFocus(setStart);
 	});
 	jwerty.key('shift+e', function() {
-		setEnd();
+		checkFocus(setEnd);
 	});
 	jwerty.key('ctrl+s', function() {
-		playStart();
+		checkFocus(playStart);
 	});
 	jwerty.key('ctrl+e', function() {
-		playEnd();
+		checkFocus(playEnd);
 	});
 
 	//fast forward shortcuts (somehow cannot create these in a loop...)
 	jwerty.key('1', function() {
-		ff(1);
+		checkFocus(ff, 1);
 	});
 	jwerty.key('2', function() {
-		ff(2);
+		checkFocus(ff, 2);
 	});
 	jwerty.key('3', function() {
-		ff(3);
+		checkFocus(ff, 3);
 	});
 	jwerty.key('4', function() {
-		ff(4);
+		checkFocus(ff, 4);
 	});
 	jwerty.key('5', function() {
-		ff(5);
+		checkFocus(ff, 5);
 	});
 	jwerty.key('6', function() {
-		ff(6);
+		checkFocus(ff, 6);
 	});
 	jwerty.key('7', function() {
-		ff(7);
+		checkFocus(ff, 7);
 	});
 	jwerty.key('8', function() {
-		ff(8);
+		checkFocus(ff, 8);
 	});
 	jwerty.key('9', function() {
-		ff(9);
+		checkFocus(ff, 9);
 	});
 
 	//rewind shortcuts
 	jwerty.key('shift+1', function() {
-		rw(1);
+		checkFocus(rw, 1);
 	});
 	jwerty.key('shift+2', function() {
-		rw(2);
+		checkFocus(rw, 2);
 	});
 	jwerty.key('shift+3', function() {
-		rw(3);
+		checkFocus(rw, 3);
 	});
 	jwerty.key('shift+4', function() {
-		rw(4);
+		checkFocus(rw, 4);
 	});
 	jwerty.key('shift+5', function() {
-		rw(5);
+		checkFocus(rw, 5);
 	});
 	jwerty.key('shift+6', function() {
-		rw(6);
+		checkFocus(rw, 6);
 	});
 	jwerty.key('shift+7', function() {
-		rw(7);
+		checkFocus(rw, 7);
 	});
 	jwerty.key('shift+8', function() {
-		rw(8);
+		checkFocus(rw, 8);
 	});
 	jwerty.key('shift+9', function() {
-		rw(9);
+		checkFocus(rw, 9);
 	});
 }

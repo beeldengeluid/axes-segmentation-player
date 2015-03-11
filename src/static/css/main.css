@@ -12,3 +12,19 @@
 	text-align: center;
 }
 
+#anchor_save {
+	visibility:hidden;
+}
+
+.start-group {
+	background-color:#00FF00;
+}
+
+.end-group {
+	background-color:#FFFF00;
+}
+
+.video-label {
+	font-weight:bold;
+	font-size:120%;
+}
