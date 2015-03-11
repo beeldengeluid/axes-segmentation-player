@@ -159,20 +159,24 @@ function onPlayerReady(e) {
  **********************************************************************************/
 
 function updateAnchors() {
-	var html = [];
-	html.push('<ul class="list-group">');
-	$.each(_videos[_curVideoIndex].anchors, function(index, value) {
-		html.push('<li class="list-group-item">');
-		html.push('<a onclick="loadAnchor('+index+');"><abbr>' + value.title + '</abbr>&nbsp;');
-		html.push(formatTime(value.start / 1000) + ' - ');
-		html.push(formatTime(value.end / 1000));
-		html.push('</a>');
-		html.push('&nbsp;<a onclick="deleteAnchor('+index+');">');
-		html.push('<i class="glyphicon glyphicon-remove"></i>');
-		html.push('</li>');
-	});
-	html.push('</ul>');
-	$('#anchors').html(html.join(''));
+	if(_videos[_curVideoIndex].anchors) {
+		var html = [];
+		html.push('<ul class="list-group">');
+		$.each(_videos[_curVideoIndex].anchors, function(index, value) {
+			html.push('<li class="list-group-item">');
+			html.push('<a onclick="loadAnchor('+index+');"><abbr>' + value.title + '</abbr>&nbsp;');
+			html.push(formatTime(value.start / 1000) + ' - ');
+			html.push(formatTime(value.end / 1000));
+			html.push('</a>');
+			html.push('&nbsp;<a onclick="deleteAnchor('+index+');">');
+			html.push('<i class="glyphicon glyphicon-remove"></i>');
+			html.push('</li>');
+		});
+		html.push('</ul>');
+		$('#anchors').html(html.join(''));
+	} else {
+		$('#anchors').html('');
+	}
 }
 
 function loadAnchor(index) {
@@ -189,10 +193,16 @@ function deleteAnchor(index) {
 	updateAnchors();
 }
 
+function validateAnchor() {
+	if($('#anchor_title').val().trim().length < 5 || $('#anchor_title').val().trim().length <5) {
+		alert('Please enter a title and a description of at least 5 characters each');
+		return false;
+	}
+	return true;
+}
+
 function saveAnchor() {
-	if($('#anchor_title').val().trim() == '' || $('#anchor_title').val().trim() == '') {
-		alert('Please enter a title and a description for the anchor');
-	} else {
+	if(validateAnchor()) {
 		var anchor = {
 			start : _start * 1000,
 			end : _end * 1000,
@@ -360,6 +370,7 @@ function selectVideo(index) {
 	_curVideoIndex = index;
 	_currentClip = _videos[_curVideoIndex];
 	playClip(_currentClip);
+	updateAnchors();
 }
 
 /***********************************************************************************
