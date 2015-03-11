@@ -177,9 +177,9 @@ function updateAnchors() {
 			html.push('</li>');
 		});
 		html.push('</ul>');
-		$('#anchors').html(html.join(''));
+		$('#saved_anchors').html(html.join(''));
 	} else {
-		$('#anchors').html('');
+		$('#saved_anchors').html('');
 	}
 }
 

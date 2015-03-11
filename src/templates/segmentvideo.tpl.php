@@ -262,7 +262,10 @@
 
 									<!-- LIST OF ANCHORS TAB-->
 									<div role="tabpanel" class="tab-pane active" id="anchors">
-										<!-- filled on the client-->
+										<h3>Saved anchors</h3>
+										<div id="saved_anchors">
+											<!-- filled on the client-->
+										</div>
 									</div>
 
 									<!-- HELP TAB -->
