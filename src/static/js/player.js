@@ -250,6 +250,7 @@ function saveAnchor() {
 		$('#anchor_desc').val('');
 		_currentAnchorIndex = -1;
 		updateAnchors();
+		save();
 	}
 }
 
@@ -271,7 +272,7 @@ function switchMode() {
 	}
 	selectVideo(_curVideoIndex);
 	initTimebar(_fragmentMode);
-	$("#edit_mode").text(_fragmentMode ? 'Edit clip boundaries' : 'Save refinement & Edit anchors');
+	$("#edit_mode").text(_fragmentMode ? 'Refine clip' : 'Save refinement & Edit anchors');
 	updateBar();
 }
 
@@ -382,9 +383,10 @@ function finish() {
 		height:240,
 		modal: true,
 		buttons: {
-			"Save & finish": function() {
+			"Finish": function() {
 				$(this).dialog("close");
-				save();
+				alert('You have completed this test and are redirected back to the starting page');
+				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
 			},
 			"Cancel": function() {
 		  		$(this).dialog("close");
@@ -431,9 +433,7 @@ function save() {
 		url : 'save.php',
 		success : function(json) {
 			console.debug(json);
-			alert('Your actions have been successfully saved, redirecting back to the starting page');
-			//document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
-			//document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/;'
+			//alert('Your actions have been successfully saved, redirecting back to the starting page');
 		},
 		error : function(err) {
 			console.debug(err);

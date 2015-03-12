@@ -224,7 +224,7 @@
 									<input id="anchor_title" type="text" class="form-control" placeholder="Enter title">
 								</div>
 								<div class="form-group">
-									<label for="anchor_desc">Description</label>
+									<label for="anchor_desc">Description of ideal linked video</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
 								</div>
 								<button class="btn btn-primary" type="button" onclick="saveAnchor()">
@@ -315,7 +315,7 @@
 
 	</div>
 
-	<div id="dialog-confirm" title="Save &amp; finish?">
+	<div id="dialog-confirm" title="Finish">
 		Are you sure you want to proceed to the end of this test?
 	</div>
 
