@@ -22,6 +22,7 @@ if($id) {
 
 	//return the record from record to make sure it is accessible
 	echo $redis->hget('savedata', $id);
+	$redis->close();
 } //else the javascript will trigger an error
 
 ?>

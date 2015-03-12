@@ -10,8 +10,9 @@ if($id) {
 
 
 	$redis->hget('savedata' , $id);
+	$redis->close();
 } else {
-	echo 'Please supply a valid data id';
+	echo "Please supply a valid data id";
 }
 
 ?>
