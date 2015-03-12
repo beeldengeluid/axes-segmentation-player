@@ -190,7 +190,7 @@ function updateAnchors() {
 		html.push('<ul class="list-group">');
 		$.each(_videos[_curVideoIndex].anchors, function(index, value) {
 			html.push('<li class="list-group-item">');
-			html.push('<a onclick="loadAnchor('+index+');"><abbr>' + value.title + '</abbr>&nbsp;');
+			html.push('<a class="anchor" onclick="loadAnchor('+index+');"><abbr>' + value.title + '</abbr>&nbsp;');
 			html.push(formatTime(value.start / 1000) + ' - ');
 			html.push(formatTime(value.end / 1000));
 			html.push('</a>');
@@ -206,12 +206,14 @@ function updateAnchors() {
 }
 
 function loadAnchor(index) {
+	$('#anchor_edit').text(' (editing current anchor)');
 	var anchor = _videos[_curVideoIndex].anchors[index];
 	_currentAnchorIndex = index;
 	_start = anchor.start / 1000;
 	_end = anchor.end / 1000;
 	$('#anchor_title').val(anchor.title);
 	$('#anchor_desc').val(anchor.description);
+	jw.seek(_start);
 }
 
 function deleteAnchor(index) {
@@ -240,17 +242,40 @@ function saveAnchor() {
 		} else {
 			if(_videos[_curVideoIndex].anchors) {
 				_videos[_curVideoIndex].anchors.push(anchor);
+				_currentAnchorIndex = _videos[_curVideoIndex].anchors.length -1;
 			} else {
 				_videos[_curVideoIndex].anchors = [anchor];
+				_currentAnchorIndex = 0;
 			}
 		}
-		_start = -1;
-		_end = -1;
-		$('#anchor_title').val('');
-		$('#anchor_desc').val('');
-		_currentAnchorIndex = -1;
+		$('#anchor_edit').text(' (editing current anchor)');
 		updateAnchors();
 		save();
+	}
+}
+
+function newAnchor() {
+	setStart(_videos[_curVideoIndex].start / 1000);
+	setEnd(_videos[_curVideoIndex].end / 1000);
+	$('#anchor_title').val('');
+	$('#anchor_desc').val('');
+	$('#anchor_edit').text(' (new)');
+	_currentAnchorIndex = -1;
+}
+
+function nextAnchor() {
+	if(_videos[_curVideoIndex].anchors) {
+		if(_currentAnchorIndex + 1 < _videos[_curVideoIndex].anchors.length) {
+			loadAnchor(_currentAnchorIndex+1);
+		}
+	}
+}
+
+function previousAnchor() {
+	if(_videos[_curVideoIndex].anchors) {
+		if(_currentAnchorIndex - 1 >= 0) {
+			loadAnchor(_currentAnchorIndex-1);
+		}
 	}
 }
 
@@ -537,17 +562,31 @@ function initKeyBindings() {
 	});
 
 	//start & end shortcuts
-	jwerty.key('shift+s', function() {
+	jwerty.key('i', function() {
 		checkFocus(setStart);
 	});
-	jwerty.key('shift+e', function() {
+	jwerty.key('o', function() {
 		checkFocus(setEnd);
 	});
-	jwerty.key('ctrl+s', function() {
+	jwerty.key('shift+i', function() {
 		checkFocus(playStart);
 	});
-	jwerty.key('ctrl+e', function() {
+	jwerty.key('shift+o', function() {
 		checkFocus(playEnd);
+	});
+
+	//anchor functions
+	jwerty.key(']', function() {
+		checkFocus(nextAnchor);
+	});
+	jwerty.key('[', function() {
+		checkFocus(previousAnchor);
+	});
+	jwerty.key('ctrl+s', function() {
+		checkFocus(saveAnchor);
+	});
+	jwerty.key('ctrl+n', function() {
+		checkFocus(newAnchor);
 	});
 
 	//fast forward shortcuts (somehow cannot create these in a loop...)

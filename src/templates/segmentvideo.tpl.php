@@ -153,7 +153,7 @@
 						Save refinement &amp; Edit anchors
 					</button>
 					<button class="btn btn-danger" onclick="finish()">
-						Save &amp; finish
+						Finish
 					</button>
 				</div>
 			</div>
@@ -220,15 +220,18 @@
 						<div class="col-sm-12">
 							<form id="anchor_save">
 								<div class="form-group">
-									<label for="anchor_title">Title</label>
+									<label for="anchor_title">Title <span id="anchor_edit">&nbsp;(new)</span></label>
 									<input id="anchor_title" type="text" class="form-control" placeholder="Enter title">
 								</div>
 								<div class="form-group">
 									<label for="anchor_desc">Description of ideal linked video</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
 								</div>
+								<button class="btn btn-primary" type="button" onclick="newAnchor()">
+									New anchor
+								</button>
 								<button class="btn btn-primary" type="button" onclick="saveAnchor()">
-									Save anchor
+									Save
 								</button>
 							</form>
 						</div>
@@ -267,6 +270,9 @@
 									<!-- HELP TAB -->
 									<div role="tabpanel" class="tab-pane" id="help">
 										<h3>Keyboard shortcuts</h3>
+										<div class="well" style="color:crimson;">
+											<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of an input field</strong>
+										</div>
 										<div class="well">
 											<strong>Standard player controls</strong><br>
 											Press <kbd>space</kbd> to play/pause the video.
@@ -283,10 +289,17 @@
 
 										<div class="well">
 											<strong>Start &amp; end of clip</strong><br>
-											To mark the start of the clip, press: <kbd>SHIFT+s</kbd><br>
-											To mark the end of the clip, press: <kbd>SHIFT+e</kbd>
-											To go to the start of your clip selection, press: <kbd>CTRL+s</kbd><br>
-											To go to the end of your clip selection, press: <kbd>CTRL+e</kbd>
+											To mark the start of the clip, press: <kbd>i</kbd><br>
+											To mark the end of the clip, press: <kbd>o</kbd>
+											To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
+											To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
+										</div>
+										<div class="well">
+											<strong>Anchors</strong><br>
+											To save an anchor press: <kbd>CTRL+s</kbd><br>
+											To create a new anchor press: <kbd>CTRL+n</kbd><br>
+											To edit the next anchor in the list press: <kbd>]</kbd><br>
+											To edit the previous anchor in the list press: <kbd>[</kbd><br>
 										</div>
 									</div>
 									<div role="tabpanel" class="tab-pane" id="guidelines">
@@ -315,7 +328,7 @@
 
 	</div>
 
-	<div id="dialog-confirm" title="Finish">
+	<div id="dialog-confirm" title="Finish" style="display:none;">
 		Are you sure you want to proceed to the end of this test?
 	</div>
 
