@@ -19,6 +19,7 @@
 		</div>
 
 		<button type="button" class="btn btn-default" onclick="post();">Submit test selection</button>
+		<button type="button" class="btn btn-default" onclick="save();">Save dummy selection</button>
 
 	</div>
 

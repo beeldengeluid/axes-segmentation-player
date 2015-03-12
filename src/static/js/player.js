@@ -3,9 +3,6 @@ jwplayer.key = 'SWCiaYWnJ9Ri4wKfADRn3N40bPrMf2/GiO8iGQ==';
 var videoUrl = 'http://axes.ch.bbc.co.uk/collections/cAXES/videos/cAXES/v20080516_100000_bbcone_to_buy_or_not_to_buy.webm';
 var jw = null;
 
-var _id = null;
-var _userId = null;
-
 var _start = -1;
 var _end = -1;
 var _screenScale = 0;
@@ -362,7 +359,7 @@ function finish() {
 		buttons: {
 			"Save & finish": function() {
 				$(this).dialog("close");
-				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+				save();
 			},
 			"Cancel": function() {
 		  		$(this).dialog("close");
@@ -392,6 +389,32 @@ function selectVideo(index) {
 	_currentClip = _videos[_curVideoIndex];
 	playClip(_currentClip);
 	updateAnchors();
+}
+
+/***********************************************************************************
+ * save to server
+ **********************************************************************************/
+
+function save() {
+	var data = _videoData;
+	data.relevant = _videos;
+	console.debug(data);
+	$.ajax({
+		method: 'POST',
+		data: JSON.stringify(data),
+		dataType : 'json',
+		url : 'save.php',
+		success : function(json) {
+			console.debug(json);
+			alert('Your actions have been successfully saved, redirecting back to the starting page');
+			//document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+			//document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/;'
+		},
+		error : function(err) {
+			console.debug(err);
+			alert('Your work could not be saved! Please try again');
+		}
+	});
 }
 
 /***********************************************************************************

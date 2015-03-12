@@ -139,7 +139,7 @@
 
 
 				<div class="col-md-12">
-					<span class="video-label">Current video:</span>
+					<span class="video-label">Current clip:</span>
 					<select id="video_select" onchange="changeVideo();">
 						<?php foreach ($this->vd->relevant as $key => $val): ?>
 	               			<option value="<?php echo $key;?>">
@@ -149,6 +149,12 @@
 					</select>
 					<span id="video_start"></span>
 					<span id="video_end"></span>
+					<button id="edit_mode" class="btn btn-primary" onclick="switchMode()">
+						Save refinement &amp; Edit anchors
+					</button>
+					<button class="btn btn-danger" onclick="finish()">
+						Save &amp; finish
+					</button>
 				</div>
 			</div>
 
@@ -211,16 +217,6 @@
 					<br>
 
 					<div class="row">
-						<div class="col-sm-12">
-							<div class="text-right">
-								<button id="edit_mode" class="btn btn-primary" onclick="switchMode()">
-									Save refinement &amp; Edit anchors
-								</button>
-								<button class="btn btn-danger" onclick="finish()">
-									Save &amp; finish
-								</button>
-							</div>
-						</div>
 						<div class="col-sm-12">
 							<form id="anchor_save">
 								<div class="form-group">

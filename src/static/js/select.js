@@ -36,3 +36,20 @@ function post() {
     document.body.appendChild(form);
     form.submit();
 }
+
+function save() {
+	console.debug('posting to save.php');
+    method = "post";
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", 'save.php');
+
+	var hiddenField = document.createElement("input");
+	hiddenField.setAttribute("type", "hidden");
+	hiddenField.setAttribute("name", "data");
+	hiddenField.setAttribute("value", JSON.stringify(_input));
+	form.appendChild(hiddenField);
+
+    document.body.appendChild(form);
+    form.submit();
+}
