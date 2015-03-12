@@ -9,7 +9,7 @@ if($id) {
 	$redis->select(11);
 
 
-	$redis->hget('savedata' , $id);
+	echo $redis->hget('savedata', $id);
 	$redis->close();
 } else {
 	echo "Please supply a valid data id";
