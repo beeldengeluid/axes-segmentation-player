@@ -124,11 +124,29 @@ function playEnd() {
 }
 
 function rw(t) {
-	jw.seek(jw.getPosition() -t);
+	if(_fragmentMode) {
+		var start = _videos[_curVideoIndex].start / 1000;
+		if(jw.getPosition() -t < start)	{
+			jw.seek(start);
+		} else {
+			jw.seek(jw.getPosition() - t);
+		}
+	} else {
+		jw.seek(jw.getPosition() - t);
+	}
 }
 
 function ff(t) {
-	jw.seek(jw.getPosition() +t);
+	if(_fragmentMode) {
+		var end = _videos[_curVideoIndex].end / 1000;
+		if(jw.getPosition() + t > end)	{
+			jw.seek(end);
+		} else {
+			jw.seek(jw.getPosition() + t);
+		}
+	} else {
+		jw.seek(jw.getPosition() + t);
+	}
 }
 
 function scaleScreen(enlarge) {
@@ -144,6 +162,13 @@ function scaleScreen(enlarge) {
  **********************************************************************************/
 
 function onPlayerTime(e) {
+	if(_fragmentMode) { //make sure the fragment player cannot pass beyond the end time
+		var end = _videos[_curVideoIndex].end / 1000;
+		if(jw.getPosition() >= end)	{
+			jw.seek(end);
+			jw.pause();
+		}
+	}
 	updateBar();
 }
 
