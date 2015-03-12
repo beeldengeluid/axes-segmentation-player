@@ -6,6 +6,7 @@ http://brew.sh/
 */
 
 $saveData = file_get_contents('php://input');
+
 $id = json_decode($saveData)->ID;
 
 if($id) {
@@ -20,7 +21,7 @@ if($id) {
 	$redis->hset('savedata' , $id, $saveData);
 
 	//return the record from record to make sure it is accessible
-	echo $redis->get($id);
+	echo $redis->hget('savedata', $id);
 } //else the javascript will trigger an error
 
 ?>
