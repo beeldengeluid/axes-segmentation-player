@@ -52,45 +52,25 @@
 					</table>
 
 					<div class="text-center">
+						<label for="perspective">Perspective</label>
+						<div id="perspective" class="btn-group" data-toggle="buttons">
+						    <label class="btn btn-default active">
+						        <input type="radio" name="need_perspective" id="default_perspective"
+						         value="My preference" checked>
+						    My preference </label>
+						    <label class="btn btn-default">
+						        <input type="radio" name="need_perspective" value="Others">
+						    Others </label>
+						    <label class="btn btn-default">
+						        <input type="radio" name="need_perspective" value="Both">
+						    Both </label>
+						</div>
+						&nbsp;&nbsp;
 						<button class="btn btn-danger" onclick="finish()">
-							Save task
+							End task
 						</button>
 					</div>
 
-					<div>
-						<h3>Keyboard shortcuts</h3>
-						<div class="well" style="color:crimson;">
-							<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of any input field</strong>
-						</div>
-						<div class="well">
-							<strong>Standard player controls</strong><br>
-							Press <kbd>space</kbd> to play/pause the video.
-						</div>
-						<div class="well">
-							<strong>Fast forward &amp; rewind</strong><br>
-							Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br>
-							To rewind, hold <kbd>SHIFT</kbd> plus a number, e.g. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.<br><br>
-
-							Use the left and right arrow to fast forward or rewind by 1 minute:<br>
-							Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br>
-							Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
-						</div>
-
-						<div class="well">
-							<strong>Start &amp; end of clip</strong><br>
-							To mark the start of the clip, press: <kbd>i</kbd><br>
-							To mark the end of the clip, press: <kbd>o</kbd><br>
-							To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
-							To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
-						</div>
-						<div class="well">
-							<strong>Anchors</strong><br>
-							To save an anchor press: <kbd>CTRL+s</kbd><br>
-							To create a new anchor press: <kbd>CTRL+n</kbd><br>
-							To edit the next anchor in the list press: <kbd>]</kbd><br>
-							To edit the previous anchor in the list press: <kbd>[</kbd><br>
-						</div>
-					</div>
 				</div>
 
 			</div>
@@ -176,23 +156,22 @@
 								</div>
 								<div class="form-group">
 									<label for="anchor_desc">
-										Description of ideal linked clips (Start with: <em>&quot;Relevant linked clips have ...&quot;</em>
+										Description of ideal linked clips (Start with: <em>&quot;Relevant linked clips have ...&quot;)</em>
 									</label>
-)</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
 								</div>
 								<div class="form-group">
-									<label for="anchor_options">Perspective</label>
+									<label for="anchor_options">Characteristic</label>
 									<div id="anchor_options" class="btn-group" data-toggle="buttons">
 									    <label class="btn btn-default active">
-									        <input type="radio" name="anchor_perspective" id="default_perspective"
-									         value="My preference" checked>
-									    My preference </label>
+									        <input type="radio" name="anchor_characteristic" id="default_characteristic"
+									         value="Visual" checked>
+									    Visual </label>
 									    <label class="btn btn-default">
-									        <input type="radio" name="anchor_perspective" value="Others">
-									    Others </label>
+									        <input type="radio" name="anchor_characteristic" value="Speech">
+									    Speech </label>
 									    <label class="btn btn-default">
-									        <input type="radio" name="anchor_perspective" value="Both">
+									        <input type="radio" name="anchor_characteristic" value="Both">
 									    Both </label>
 									</div>
 								</div>
@@ -210,6 +189,7 @@
 							<!-- ONLY SHOWN IN REFINEMENT MODE -->
 							<div id="refine_button_panel" class="text-center">
 								<button class="btn btn-primary" onclick="addAnchors();">Add anchors</button>
+								<button class="btn btn-danger" onclick="backToSelection();">Back</button>
 							</div>
 
 						</div>
@@ -227,33 +207,71 @@
 							<div id="anchor_tabs" role="tabpanel">
 								<ul class="nav nav-tabs" role="tablist">
 									<li role="presentation" class="active">
+										<a href="#guidelines" aria-controls="guidelines" role="tab" data-toggle="tab">Guidelines</a>
+									</li>
+									<li role="presentation">
 										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Anchors</a>
 									</li>
 									<li role="presentation">
-										<a href="#guidelines" aria-controls="guidelines" role="tab" data-toggle="tab">Guidelines</a>
+										<a href="#shortkeys" aria-controls="shortkeys" role="tab" data-toggle="tab">Shortcuts</a>
 									</li>
 								</ul>
 
 								<div class="tab-content">
 
+									<!-- GUIDLINES TAB -->
+									<div role="tabpanel" class="tab-pane active" id="guidelines">
+										<h3>Guidelines</h3>
+										<div class="well">
+											Anchors should be created for one of the following reasons:<br>
+											<ul>
+												<li>Links may help users to understand the anchor better.</li>
+												<li>Links may contain relevant information about the anchor, given what you are currently looking for.</li>
+												<li>Links may contain information about occurring objects, places, people, and events that appear in this anchor.</li>
+											</ul>
+										</div>
+									</div>
+
 									<!-- LIST OF ANCHORS TAB-->
-									<div role="tabpanel" class="tab-pane active" id="anchors">
+									<div role="tabpanel" class="tab-pane" id="anchors">
 										<h3>Saved anchors</h3>
 										<div id="saved_anchors">
 											<!-- filled on the client-->
 										</div>
 									</div>
 
-									<!-- GUIDLINES TAB -->
-									<div role="tabpanel" class="tab-pane" id="guidelines">
-										<h3>Guidelines</h3>
+									<div role="tabpanel" class="tab-pane" id="shortkeys">
+										<h3>Keyboard shortcuts</h3>
+										<div class="well" style="color:crimson;">
+											<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of any input field</strong>
+										</div>
 										<div class="well">
-											Anchors should be created for one of the following reasons:<br>
-											<ul>
-												<li>Linked clips may help users to understand the anchor better.</li>
-												<li>Linked clips may contain relevant information about the anchor, given the current information need.</li>
-												<li>Linked clips may contain information about occurring objects, places, people, and events that appear in this clip.</li>
-											</ul>
+											<strong>Standard player controls</strong><br>
+											Press <kbd>space</kbd> to play/pause the video.
+										</div>
+										<div class="well">
+											<strong>Fast forward &amp; rewind</strong><br>
+											Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br>
+											To rewind, hold <kbd>SHIFT</kbd> plus a number, e.g. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.<br><br>
+
+											Use the left and right arrow to fast forward or rewind by 1 minute:<br>
+											Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br>
+											Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
+										</div>
+
+										<div class="well">
+											<strong>Start &amp; end of clip</strong><br>
+											To mark the start of the clip, press: <kbd>i</kbd><br>
+											To mark the end of the clip, press: <kbd>o</kbd><br>
+											To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
+											To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
+										</div>
+										<div class="well">
+											<strong>Anchors</strong><br>
+											To save an anchor press: <kbd>CTRL+s</kbd><br>
+											To create a new anchor press: <kbd>CTRL+n</kbd><br>
+											To edit the next anchor in the list press: <kbd>]</kbd><br>
+											To edit the previous anchor in the list press: <kbd>[</kbd><br>
 										</div>
 									</div>
 

@@ -134,7 +134,7 @@ a {
 }
 
 /* OVERRIDE BOOTSTRAP ACTIVE RADIOBUTTON COLORS */
-#anchor_options .btn.active, .btn:active {
+#anchor_options .btn.active, .btn:active, #perspective .btn.active, .btn:active {
     background-color: #337ab7;
     color: white;
 }

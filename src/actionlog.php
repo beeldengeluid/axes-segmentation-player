@@ -37,6 +37,7 @@ function generateList() {
 				$item = array(
 					'userID' => $rec->userID,
 					'needID' => $id,
+					'perspective' => $rec->perspective,
 					'description' => $rec->description,
 					'videoTitle' => $video->title,
 					'videoUrl' => $video->videoURL,
@@ -49,7 +50,7 @@ function generateList() {
 						$item['anchorDescription'] = $anchor->description;
 						$item['anchorStart'] = toPrettyTime($anchor->start);
 						$item['anchorEnd'] = toPrettyTime($anchor->end);
-						$item['perspective'] = $anchor->perspective;
+						$item['characteristic'] = $anchor->characteristic;
 						array_push($list, $item);
 					}
 				} else {
@@ -81,6 +82,7 @@ $list = generateList();
 		<tr>
 			<th>User ID</th>
 			<th>Need ID</th>
+			<th>Perspective</th>
 			<th>Description</th>
 			<th>Video</th>
 			<th>Start</th>
@@ -89,12 +91,14 @@ $list = generateList();
 			<th>Anchor description</th>
 			<th>Start</th>
 			<th>End</th>
+			<th>Characteristic</th>
 
 		</tr>
 		<?php foreach($list as $item) { ?>
 			<tr>
 				<td><?php echo $item['userID']; ?></td>
 				<td><?php echo $item['needID']; ?></td>
+				<td><?php echo $item['perspective']; ?></td>
 				<td><?php echo $item['description']; ?></td>
 				<td>
 					<a href="<?php echo $item['videoUrl']; ?>" target="_video">
@@ -107,7 +111,7 @@ $list = generateList();
 				<td><?php echo $item['anchorDescription']; ?></td>
 				<td><?php echo $item['anchorStart']; ?></td>
 				<td><?php echo $item['anchorEnd']; ?></td>
-				<td><?php echo $item['perspective']; ?></td>
+				<td><?php echo $item['characteristic']; ?></td>
 			</tr>
 		<?php } ?>
 	</table>

@@ -178,7 +178,7 @@ function onResizePlayer(e) {
 }
 
 function onPlayerReady(e) {
-	jw.play();
+	//jw.play();
 }
 
 /***********************************************************************************
@@ -214,6 +214,23 @@ function loadAnchor(index) {
 	_end = anchor.end / 1000;
 	$('#anchor_title').val(anchor.title);
 	$('#anchor_desc').val(anchor.description);
+
+	//set the right characteristic
+	var cIndex = 0;
+	$('#anchor_options label').removeClass('active');
+	if(anchor.characteristic) {
+		$.each($("input:radio[name=anchor_characteristic]"), function(i, value) {
+			if($(this).val() == anchor.characteristic) {
+				$(this).attr('checked', 'checked');
+				cIndex = i;
+			} else {
+				$(this).attr('checked', null);
+			}
+		});
+	} else {
+		$('#default_characteristic').attr('checked', 'checked');
+	}
+	$('#anchor_options label:eq('+cIndex+')').addClass('active');
 	jw.seek(_start);
 }
 
@@ -237,7 +254,7 @@ function saveAnchor() {
 			end : _end * 1000,
 			title : $('#anchor_title').val(),
 	      	description : $('#anchor_desc').val(),
-	      	perspective : $("input:radio[name=anchor_perspective]:checked").val()
+	      	characteristic : $("input:radio[name=anchor_characteristic]:checked").val()
 		}
 		if(_currentAnchorIndex != -1) {
 			_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
@@ -260,9 +277,9 @@ function clearAnchorForm(){
 	$('#anchor_title').val('');
 	$('#anchor_desc').val('');
 	$('#anchor_edit').text(' (new)');
-	$("#default_perspective").attr('checked', 'checked');
-	$("#anchor_options label").removeClass('active');
-	$("#anchor_options label:eq(0)").addClass('active');
+	$('#default_characteristic').attr('checked', 'checked');
+	$('#anchor_options label').removeClass('active');
+	$('#anchor_options label:eq(0)').addClass('active');
 	_currentAnchorIndex = -1;
 }
 
@@ -362,7 +379,7 @@ function updateVideoMetadata() {
 
 }
 
-function playClip() {
+function playClip(autoPlay) {
 	updateVideoMetadata();
 	var url = _videos[_curVideoIndex].videoURL;
 	url += '#t=' + (_videos[_curVideoIndex].start / 1000);
@@ -372,6 +389,7 @@ function playClip() {
 		width:'100%',
 		controls : false,
 		image: null,
+		autostart : autoPlay,
 	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady).onDisplayClick(onPlayerClick);
 }
 
@@ -415,10 +433,10 @@ function toPrettyVideoName(videoUrl) {
 	return videoUrl;
 }
 
-function selectVideo(index) {
+function selectVideo(index, autoPlay) {
 	_curVideoIndex = index;
 	clearAnchorForm();
-	playClip();
+	playClip(autoPlay);
 	setStart(_videos[_curVideoIndex].start / 1000);
 	setEnd(_videos[_curVideoIndex].end / 1000);
 	updateAnchors();
@@ -437,21 +455,31 @@ function refineClip(index) {
 	$('#refinement_panel').css('visibility', 'visible');
 	$('#refine_button_panel').css('display', 'block');
 	$('#anchor_tabs').css('display', 'none');
-	selectVideo(index);
+	selectVideo(index, true);
 	updateBar();
 }
 
-function addAnchors() {
+function addAnchors(index) {
 	_fragmentMode = true;
+	selectVideo(_curVideoIndex, false);
+	if(index != undefined) {
+		console.debug('Editing this stuff');
+		_curVideoIndex = index;
+		setStart(_videos[_curVideoIndex].start / 1000);
+		setEnd(_videos[_curVideoIndex].end / 1000);
+		updateVideoMetadata();
+		$('#selection_panel').css('display', 'none');
+		$('#video_player').css('display', 'block');
+		$('#refinement_panel').css('visibility', 'visible');
+	}
 	//needed for the playing the video fragment correctly
 	_videos[_curVideoIndex].start = _start * 1000;//ms!
 	_videos[_curVideoIndex].end = _end * 1000;//ms!
-	selectVideo(_curVideoIndex);
-	updateBar();
-
 	$('#refine_button_panel').css('display', 'none');
 	$('#anchor_save').css('display', 'block');
 	$('#anchor_tabs').css('display', 'block');
+	updateAnchors();
+	updateBar();
 }
 
 function backToSelection() {
@@ -467,6 +495,7 @@ function backToSelection() {
 }
 
 function finish() {
+	save();
 	$( "#dialog-confirm" ).dialog({
 		resizable: false,
 		height:240,
@@ -489,7 +518,9 @@ function finish() {
 
 function save() {
 	var data = _videoData;
+	var perspective = $("input:radio[name=need_perspective]:checked").val();
 	data.relevant = _videos;
+	data.perspective = perspective;
 	console.debug(data);
 	$.ajax({
 		method: 'POST',
@@ -523,6 +554,24 @@ function initVideoData() {
 	if(_videoData) {
 		$('#description').text('You were looking for: "' + _videoData.description + '"');
 		$('#session_id').text('ID: ' + _videoData.ID + ' / ' + _videoData.userID);
+
+		//set the right preference
+		var cIndex = 0;
+		$('#perspective label').removeClass('active');
+		if(_videoData.perspective) {
+			$.each($("input:radio[name=need_perspective]"), function(i, value) {
+				if($(this).val() == _videoData.perspective) {
+					$(this).attr('checked', 'checked');
+					cIndex = i;
+				} else {
+					$(this).attr('checked', null);
+				}
+			});
+		} else {
+			$('#default_perspective').attr('checked', 'checked');
+		}
+		$('#perspective label:eq('+cIndex+')').addClass('active');
+
 		//fill the list of videos
 		$.each(_videoData['relevant'], function(index, value) {
 			_videos.push(value);
@@ -543,8 +592,13 @@ function updateSelectionTable() {
 		html.push('<td>'+formatTime(v.end / 1000)+'</td>');
 		html.push('<td>');
 		if(!_videos[index].anchors || _videos[index].anchors.length == 0) {
-			html.push('<button id="edit_mode" class="btn btn-primary" onclick="refineClip('+index+')">');
+			html.push('<button class="btn btn-primary" onclick="refineClip('+index+')">');
 			html.push('Refine clip');
+			html.push('</button>');
+		}
+		if(_videos[index].anchors && _videos[index].anchors.length > 0) {
+			html.push('<button class="btn btn-primary" onclick="addAnchors('+index+')">');
+			html.push('Edit anchors');
 			html.push('</button>');
 		}
 		html.push('</td>');
