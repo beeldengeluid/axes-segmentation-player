@@ -272,6 +272,46 @@
 								</div>
 
 							</div>
+
+
+							<!-- ONLY DISPLAYED WHEN REFINING CLIPS -->
+							<div id="refine_tabs">
+								<h3>Keyboard shortcuts</h3>
+								<div class="well" style="color:crimson;">
+									<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of any input field</strong>
+								</div>
+								<div class="well">
+									<strong>Standard player controls</strong><br>
+									Press <kbd>space</kbd> to play/pause the video.
+								</div>
+								<div class="well">
+									<strong>Fast forward &amp; rewind</strong><br>
+									Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br>
+									To rewind, hold <kbd>SHIFT</kbd> plus a number, e.g. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.<br><br>
+
+									Use the left and right arrow to fast forward or rewind by 1 minute:<br>
+									Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br>
+									Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
+								</div>
+
+								<div class="well">
+									<strong>Start &amp; end of clip</strong><br>
+									To mark the start of the clip, press: <kbd>i</kbd><br>
+									To mark the end of the clip, press: <kbd>o</kbd><br>
+									To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
+									To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
+								</div>
+								<div class="well">
+									<strong>Anchors</strong><br>
+									To save an anchor press: <kbd>CTRL+s</kbd><br>
+									To create a new anchor press: <kbd>CTRL+n</kbd><br>
+									To edit the next anchor in the list press: <kbd>]</kbd><br>
+									To edit the previous anchor in the list press: <kbd>[</kbd><br>
+								</div>
+							</div><!-- END OF REFINE CLIP TABS-->
+
+
+
 						</div>
 					</div>
 

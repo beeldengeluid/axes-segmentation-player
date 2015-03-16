@@ -233,7 +233,7 @@ function loadAnchor(index) {
 	}
 	$('#anchor_options label:eq('+cIndex+')').addClass('active');
 	jw.seek(_start);
-	jw.pause(true);
+	updateBar();
 }
 
 function deleteAnchor(index) {
@@ -325,6 +325,9 @@ function updateBar() {
 		var end = _videos[_curVideoIndex].end / 1000;
 		var dur = end - start;
 		var t = jw.getPosition();
+		if(!t) {
+			t = _start;
+		}
 		var dt = t - start;
 		var formattedTime = formatTime(t);
 		var elapsed = c.width / 100 * (dt / (dur / 100));
@@ -463,16 +466,24 @@ function refineClip(index) {
 	$('#refinement_panel').css('visibility', 'visible');
 	$('#refine_button_panel').css('display', 'block');
 	$('#anchor_tabs').css('display', 'none');
+	$('#refine_tabs').css('display', 'block');
 	selectVideo(index, true);
 	updateBar();
 }
 
 function addAnchors(index) {
 	$('#navbar-info').text('Edit anchors');
-
 	_fragmentMode = true;
-	selectVideo(_curVideoIndex, false);
+
+	if(index == undefined) {
+		//needed for the playing the video fragment correctly
+		_videos[_curVideoIndex].start = _start * 1000;//ms!
+		_videos[_curVideoIndex].end = _end * 1000;//ms!
+		selectVideo(_curVideoIndex, false);
+	}
+
 	if(index != undefined) {
+		selectVideo(_curVideoIndex, false);
 		console.debug('Editing this stuff');
 		_curVideoIndex = index;
 		setStart(_videos[_curVideoIndex].start / 1000);
@@ -481,11 +492,12 @@ function addAnchors(index) {
 		$('#selection_panel').css('display', 'none');
 		$('#video_player').css('display', 'block');
 		$('#refinement_panel').css('visibility', 'visible');
+		_videos[_curVideoIndex].start = _start * 1000;//ms!
+		_videos[_curVideoIndex].end = _end * 1000;//ms!
 	}
-	//needed for the playing the video fragment correctly
-	_videos[_curVideoIndex].start = _start * 1000;//ms!
-	_videos[_curVideoIndex].end = _end * 1000;//ms!
+
 	$('#refine_button_panel').css('display', 'none');
+	$('#refine_tabs').css('display', 'none');
 	$('#anchor_save').css('display', 'block');
 	$('#anchor_tabs').css('display', 'block');
 	updateAnchors();
@@ -523,6 +535,7 @@ function anchorsFinished() {
 	$('#refine_button_panel').css('display', 'none');
 	$('#anchor_save').css('display', 'none');
 	$('#anchor_tabs').css('display', 'none');
+	$('#refine_tabs').css('display', 'none');
 	$('#video_player').css('display', 'none');
 	jw.stop();
 }
@@ -549,7 +562,7 @@ function finish() {
  * save to server
  **********************************************************************************/
 
-function save(callback) {
+function save() {
 	var data = _videoData;
 	var perspective = $("input:radio[name=need_perspective]:checked").val();
 	data.relevant = _videos;
@@ -562,9 +575,6 @@ function save(callback) {
 		url : 'save.php',
 		success : function(json) {
 			console.debug(json);
-			if(callback) {
-				callback();
-			}
 		},
 		error : function(err) {
 			console.debug(err);
