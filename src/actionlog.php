@@ -98,8 +98,12 @@ $list = generateList();
 			<tr>
 				<td><?php echo $item['userID']; ?></td>
 				<td>
-					<a href="http://rdbg.tuxic.nl/axessegment/getdata.php?id=<?php echo $item['needID']; ?>" target="_need">
-						<?php echo $item['needID']; ?>
+					<?php echo $item['needID']; ?>
+					<a href="http://rdbg.tuxic.nl/axessegment/getdata.php?id=<?php echo $item['needID']; ?>" target="_need_json">
+						JSON
+					</a>
+					<a href="http://rdbg.tuxic.nl/axessegment/select.php?id=<?php echo $item['needID']; ?>" target="_need_edit">
+						Edit
 					</a>
 				</td>
 				<td><?php echo $item['perspective']; ?></td>
