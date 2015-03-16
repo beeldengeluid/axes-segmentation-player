@@ -180,6 +180,7 @@ function onResizePlayer(e) {
 
 function onPlayerReady(e) {
 	//jw.play();
+	updateBar();
 }
 
 /***********************************************************************************
@@ -216,6 +217,7 @@ function loadAnchor(index) {
 	$('#anchor_title').val(anchor.title);
 	$('#anchor_desc').val(anchor.description);
 
+	console.debug('anchor' + _start + ' ==> ' + _end);
 	//set the right characteristic
 	var cIndex = 0;
 	$('#anchor_options label').removeClass('active');
@@ -349,6 +351,9 @@ function updateBar() {
 	} else {
 		var dur = jw.getDuration();
 		var t = jw.getPosition();
+		if(!t) {
+			t = _start;
+		}
 		var formattedTime = formatTime(t);
 		var elapsed = c.width / 100 * (t / (dur / 100));
 		var startPoint = c.width / 100 * (_start / (dur / 100));
@@ -484,7 +489,6 @@ function addAnchors(index) {
 
 	if(index != undefined) {
 		selectVideo(_curVideoIndex, false);
-		console.debug('Editing this stuff');
 		_curVideoIndex = index;
 		setStart(_videos[_curVideoIndex].start / 1000);
 		setEnd(_videos[_curVideoIndex].end / 1000);

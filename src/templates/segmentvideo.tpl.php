@@ -150,7 +150,7 @@
 								</div>
 								<div class="form-group">
 									<label for="anchor_desc">
-										Description of ideal linked clips (Start with: <em>&quot;Relevant linked clips have ...&quot;)</em>
+										Description of ideal linked clips (Start with: <em>&quot;Relevant links have ...&quot;)</em>
 									</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
 								</div>
