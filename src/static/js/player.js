@@ -233,6 +233,7 @@ function loadAnchor(index) {
 	}
 	$('#anchor_options label:eq('+cIndex+')').addClass('active');
 	jw.seek(_start);
+	jw.pause(true);
 }
 
 function deleteAnchor(index) {
