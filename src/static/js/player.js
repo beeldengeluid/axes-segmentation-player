@@ -467,7 +467,7 @@ function refineClip(index) {
 	$('#refine_button_panel').css('display', 'block');
 	$('#anchor_tabs').css('display', 'none');
 	$('#refine_tabs').css('display', 'block');
-	selectVideo(index, true);
+	selectVideo(index, false);
 	updateBar();
 }
 
