@@ -50,9 +50,11 @@ function generateList() {
 						$item['anchorStart'] = toPrettyTime($anchor->start);
 						$item['anchorEnd'] = toPrettyTime($anchor->end);
 						$item['perspective'] = $anchor->perspective;
+						array_push($list, $item);
 					}
+				} else {
+					array_push($list, $item);
 				}
-				array_push($list, $item);
 			}
 		}
 	}
