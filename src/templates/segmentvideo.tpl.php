@@ -175,7 +175,10 @@
 									<input id="anchor_title" type="text" class="form-control" placeholder="Enter title">
 								</div>
 								<div class="form-group">
-									<label for="anchor_desc">Description of ideal linked video</label>
+									<label for="anchor_desc">
+										Description of ideal linked clips (Start with: <em>&quot;Relevant linked clips have ...&quot;</em>
+									</label>
+)</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
 								</div>
 								<div class="form-group">

@@ -370,8 +370,16 @@ function playClip() {
 		file: url,
 		width:'100%',
 		controls : false,
-		image: null
-	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady);
+		image: null,
+	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady).onDisplayClick(onPlayerClick);
+}
+
+function onPlayerClick(){
+	if(jw.getState() == 'PLAYING') {
+		jw.pause();
+	} else {
+		jw.play();
+	}
 }
 
 /***********************************************************************************
