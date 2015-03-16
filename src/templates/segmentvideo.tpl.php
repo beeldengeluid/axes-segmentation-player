@@ -20,13 +20,7 @@
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-					<span class="sr-only">Menu</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">Labs · Beeld en Geluid</a>
+				<a id="navbar-info" class="navbar-brand" href="#">Select clip</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
@@ -181,15 +175,15 @@
 								<button class="btn btn-primary" type="button" onclick="saveAnchor()" title="Save current anchor (CTRL+s)">
 									Save anchor
 								</button>
-								<button class="btn btn-danger" type="button" onclick="backToSelection()">
+								<button class="btn btn-danger" type="button" onclick="backToSelection(true)">
 									End task / select clip
 								</button>
 							</form>
 
 							<!-- ONLY SHOWN IN REFINEMENT MODE -->
 							<div id="refine_button_panel" class="text-center">
-								<button class="btn btn-primary" onclick="addAnchors();">Add anchors</button>
-								<button class="btn btn-danger" onclick="backToSelection();">Back</button>
+								<button class="btn btn-primary" onclick="addAnchors();">Edit anchors</button>
+								<button class="btn btn-danger" onclick="backToSelection(false);">Back</button>
 							</div>
 
 						</div>
@@ -291,6 +285,10 @@
 
 	<div id="dialog-confirm" title="Finish" style="display:none;">
 		Proceed to next search?
+	</div>
+
+	<div id="dialog-confirm-anchors" title="Select Clip, security question (yes/no)" style="display:none;">
+		Are you confident that you created all anchors according to the guidelines?
 	</div>
 
 	<script>

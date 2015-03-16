@@ -450,6 +450,8 @@ function selectVideo(index, autoPlay) {
 function refineClip(index) {
 	_fragmentMode = false;
 	updateVideoMetadata();
+	$('#navbar-info').text('Refine clip');
+
 	$('#video_player').css('display', 'block');
 	$('#selection_panel').css('display', 'none');
 	$('#refinement_panel').css('visibility', 'visible');
@@ -460,6 +462,8 @@ function refineClip(index) {
 }
 
 function addAnchors(index) {
+	$('#navbar-info').text('Edit anchors');
+
 	_fragmentMode = true;
 	selectVideo(_curVideoIndex, false);
 	if(index != undefined) {
@@ -482,7 +486,30 @@ function addAnchors(index) {
 	updateBar();
 }
 
-function backToSelection() {
+function backToSelection(validate) {
+	if(validate) {
+		$( "#dialog-confirm-anchors" ).dialog({
+			resizable: false,
+			height:240,
+			modal: true,
+			buttons: {
+				"Yes": function() {
+					$(this).dialog("close");
+					anchorsFinished();
+				},
+				"No": function() {
+			  		$(this).dialog("close");
+				}
+			}
+	    });
+	} else {
+		anchorsFinished();
+	}
+
+}
+
+function anchorsFinished() {
+	$('#navbar-info').text('Select clip');
 	save();
 	updateSelectionTable();
 	$('#selection_panel').css('display', 'block');
