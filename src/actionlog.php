@@ -43,11 +43,13 @@ function generateList() {
 					'videoStart' => toPrettyTime($video->start),
 					'videoEnd' => toPrettyTime($video->end)
 				);
-				foreach($video->anchors as $anchor) {
-					$item['anchorTitle'] = $anchor->title;
-					$item['anchorDescription'] = $anchor->description;
-					$item['anchorStart'] = toPrettyTime($anchor->start);
-					$item['anchorEnd'] = toPrettyTime($anchor->end);
+				if($video->anchors) {
+					foreach($video->anchors as $anchor) {
+						$item['anchorTitle'] = $anchor->title;
+						$item['anchorDescription'] = $anchor->description;
+						$item['anchorStart'] = toPrettyTime($anchor->start);
+						$item['anchorEnd'] = toPrettyTime($anchor->end);
+					}
 				}
 				array_push($list, $item);
 			}
