@@ -200,7 +200,7 @@
 									New anchor
 								</button>
 								<button class="btn btn-primary" type="button" onclick="saveAnchor()" title="Save current anchor (CTRL+s)">
-									Save
+									Save anchor
 								</button>
 								<button class="btn btn-danger" type="button" onclick="backToSelection()">
 									End task / select clip

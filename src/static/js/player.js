@@ -355,9 +355,9 @@ function getMousePos(canvas, evt) {
 
 function updateVideoMetadata() {
 	var vd = ['Current clip: '];
-	vd.push(_videos[_curVideoIndex].title + ' ');
-	vd.push(formatTime(_videos[_curVideoIndex].start / 1000) + ' ');
-	vd.push(formatTime(_videos[_curVideoIndex].end / 1000));
+	vd.push(_videos[_curVideoIndex].title + ' (');
+	vd.push(formatTime(_videos[_curVideoIndex].start / 1000) + ' - ');
+	vd.push(formatTime(_videos[_curVideoIndex].end / 1000) + ')');
 	$('#video_label').text(vd.join(''));
 
 }
