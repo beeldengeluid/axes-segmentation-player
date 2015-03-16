@@ -301,13 +301,6 @@
 									To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
 									To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
 								</div>
-								<div class="well">
-									<strong>Anchors</strong><br>
-									To save an anchor press: <kbd>CTRL+s</kbd><br>
-									To create a new anchor press: <kbd>CTRL+n</kbd><br>
-									To edit the next anchor in the list press: <kbd>]</kbd><br>
-									To edit the previous anchor in the list press: <kbd>[</kbd><br>
-								</div>
 							</div><!-- END OF REFINE CLIP TABS-->
 
 
