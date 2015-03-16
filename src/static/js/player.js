@@ -270,7 +270,9 @@ function saveAnchor() {
 		$('#anchor_edit').text(' (editing current anchor)');
 		updateAnchors();
 		save();
+		return true;
 	}
+	return false;
 }
 
 function clearAnchorForm(){
@@ -284,10 +286,12 @@ function clearAnchorForm(){
 }
 
 function newAnchor() {
-	setStart(_videos[_curVideoIndex].start / 1000);
-	setEnd(_videos[_curVideoIndex].end / 1000);
-	clearAnchorForm();
-	playStart();
+	if(saveAnchor()) {
+		setStart(_videos[_curVideoIndex].start / 1000);
+		setEnd(_videos[_curVideoIndex].end / 1000);
+		clearAnchorForm();
+		playStart();
+	}
 }
 
 function nextAnchor() {
@@ -543,7 +547,7 @@ function finish() {
  * save to server
  **********************************************************************************/
 
-function save() {
+function save(callback) {
 	var data = _videoData;
 	var perspective = $("input:radio[name=need_perspective]:checked").val();
 	data.relevant = _videos;
@@ -556,7 +560,9 @@ function save() {
 		url : 'save.php',
 		success : function(json) {
 			console.debug(json);
-			//alert('Your actions have been successfully saved, redirecting back to the starting page');
+			if(callback) {
+				callback();
+			}
 		},
 		error : function(err) {
 			console.debug(err);
@@ -684,11 +690,6 @@ function initKeyBindings() {
 	});
 	jwerty.key('right', function() {
 		checkFocus(ff, 60);
-	});
-
-	//switch mode
-	jwerty.key('m', function() {
-		checkFocus(switchMode);
 	});
 
 	//pause & play shortcut
