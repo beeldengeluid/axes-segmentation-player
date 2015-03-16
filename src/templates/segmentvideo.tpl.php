@@ -68,18 +68,18 @@
 						</div>
 						<div class="well">
 							<strong>Fast forward &amp; rewind</strong><br>
-							Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br><br>
-							To rewind, hold <kbd>SHIFT</kbd> plus a number. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.
+							Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br>
+							To rewind, hold <kbd>SHIFT</kbd> plus a number, e.g. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.<br><br>
 
-							Use the left and right arrow to fast forward or rewind by 1 minute:<br><br>
-							Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br><br>
+							Use the left and right arrow to fast forward or rewind by 1 minute:<br>
+							Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br>
 							Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
 						</div>
 
 						<div class="well">
 							<strong>Start &amp; end of clip</strong><br>
 							To mark the start of the clip, press: <kbd>i</kbd><br>
-							To mark the end of the clip, press: <kbd>o</kbd>
+							To mark the end of the clip, press: <kbd>o</kbd><br>
 							To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
 							To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
 						</div>
@@ -196,10 +196,10 @@
 									    Both </label>
 									</div>
 								</div>
-								<button class="btn btn-primary" type="button" onclick="newAnchor()">
+								<button class="btn btn-primary" type="button" onclick="newAnchor()" title="Create new anchor (CTRL+n)">
 									New anchor
 								</button>
-								<button class="btn btn-primary" type="button" onclick="saveAnchor()">
+								<button class="btn btn-primary" type="button" onclick="saveAnchor()" title="Save current anchor (CTRL+s)">
 									Save
 								</button>
 								<button class="btn btn-danger" type="button" onclick="backToSelection()">

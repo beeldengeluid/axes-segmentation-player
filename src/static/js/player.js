@@ -270,6 +270,7 @@ function newAnchor() {
 	setStart(_videos[_curVideoIndex].start / 1000);
 	setEnd(_videos[_curVideoIndex].end / 1000);
 	clearAnchorForm();
+	playStart();
 }
 
 function nextAnchor() {
