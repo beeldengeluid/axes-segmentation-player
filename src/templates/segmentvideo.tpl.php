@@ -1,30 +1,3 @@
-<?php
-
-function toPrettyTime($ms) {
-	$ms = intval($ms);
-	$hours = 0;
-	$minutes = 0;
-	$seconds = 0;
-	while($ms >= 360000){
-		$hours++;
-		$ms -= 360000;
-	}
-	while($ms >= 60000) {
-		$minutes++;
-		$ms -= 60000;
-	}
-	while($ms >= 1000) {
-		$seconds++;
-		$ms -= 1000;
-	}
-	if($hours < 10) {$hours = '0'.$hours;}
-	if($minutes < 10) {$minutes = '0'.$minutes;}
-	if($seconds < 10) {$seconds = '0'.$seconds;}
-	return $hours.':'.$minutes.':'.$seconds;
-}
-
-?>
-
 <!DOCTYPE html>
 <!-- saved from url=(0045)http://deploy1.beeldengeluid.nl/frontend/vtt/ -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
