@@ -1,8 +1,35 @@
+<?php
+
+function toPrettyTime($ms) {
+	$ms = intval($ms);
+	$hours = 0;
+	$minutes = 0;
+	$seconds = 0;
+	while($ms >= 360000){
+		$hours++;
+		$ms -= 360000;
+	}
+	while($ms >= 60000) {
+		$minutes++;
+		$ms -= 60000;
+	}
+	while($ms >= 1000) {
+		$seconds++;
+		$ms -= 1000;
+	}
+	if($hours < 10) {$hours = '0'.$hours;}
+	if($minutes < 10) {$minutes = '0'.$minutes;}
+	if($seconds < 10) {$seconds = '0'.$seconds;}
+	return $hours.':'.$minutes.':'.$seconds;
+}
+
+?>
+
 <!DOCTYPE html>
 <!-- saved from url=(0045)http://deploy1.beeldengeluid.nl/frontend/vtt/ -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<title>HTML5 Video Anchor</title>
+<title>Video Hyperlinking Annotator</title>
 <meta name="author" content="Jaap Blom">
 <meta name="description" content="">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -138,31 +165,66 @@
 				</div>
 
 
-				<div class="col-md-12">
-					<span class="video-label">Current clip:</span>
-					<select id="video_select" onchange="changeVideo();">
-						<?php foreach ($this->vd->relevant as $key => $val): ?>
-	               			<option value="<?php echo $key;?>">
-	               				<?php echo $val->title;?>
-	               			</option>
-	            		<?php endforeach; ?>
-					</select>
-					<span id="video_start"></span>
-					<span id="video_end"></span>
-					<button id="edit_mode" class="btn btn-primary" onclick="switchMode()">
-						Save refinement &amp; Edit anchors
-					</button>
-					<button class="btn btn-danger" onclick="finish()">
-						Finish
-					</button>
+				<div id="selection_panel" class="col-md-12">
+					<table id="select_table" class="table">
+						<!-- will be filled from javascript -->
+					</table>
+
+					<div class="text-center">
+						<button class="btn btn-danger" onclick="finish()">
+							Save task
+						</button>
+					</div>
+
+					<div>
+						<h3>Keyboard shortcuts</h3>
+						<div class="well" style="color:crimson;">
+							<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of any input field</strong>
+						</div>
+						<div class="well">
+							<strong>Standard player controls</strong><br>
+							Press <kbd>space</kbd> to play/pause the video.
+						</div>
+						<div class="well">
+							<strong>Fast forward &amp; rewind</strong><br>
+							Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br><br>
+							To rewind, hold <kbd>SHIFT</kbd> plus a number. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.
+
+							Use the left and right arrow to fast forward or rewind by 1 minute:<br><br>
+							Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br><br>
+							Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
+						</div>
+
+						<div class="well">
+							<strong>Start &amp; end of clip</strong><br>
+							To mark the start of the clip, press: <kbd>i</kbd><br>
+							To mark the end of the clip, press: <kbd>o</kbd>
+							To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
+							To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
+						</div>
+						<div class="well">
+							<strong>Anchors</strong><br>
+							To save an anchor press: <kbd>CTRL+s</kbd><br>
+							To create a new anchor press: <kbd>CTRL+n</kbd><br>
+							To edit the next anchor in the list press: <kbd>]</kbd><br>
+							To edit the previous anchor in the list press: <kbd>[</kbd><br>
+						</div>
+					</div>
 				</div>
+
 			</div>
 
 			<br>
 
-			<div class="row">
+			<div id="refinement_panel" class="row">
+
+				<div class="col-md-12">
+					<span id="video_label"></span>
+				</div>
 
 				<div class="col-md-8">
+
+					<!-- THE VIDEO PLAYER AND VIDEO CONTROLS ARE SHOWN IN BOTH ANCHOR & REFINEMENT MODE-->
 
 					<div id="video_container">
 						<div id="video_player">Loading the player...</div>
@@ -183,13 +245,16 @@
 								</span>
 								<input id="start_time" type="text" class="form-control" placeholder="00:00:00">
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" onclick="setManualStart()" title="When you press this the start time will be set to the time you entered in the input field">
+									<button class="btn btn-default" type="button" onclick="setManualStart()"
+										title="When you press this the start time will be set to the time you entered in the input field">
 										Save
 									</button>
-									<button class="btn btn-default" type="button" onclick="setStart()" title="When you press this the start time will be same as the current player time">
+									<button class="btn btn-default" type="button" onclick="setStart()"
+										title="When you press this the start time will be same as the current player time">
 										Copy
 									</button>
-									<button class="btn btn-default" type="button" onclick="playStart()" title="When you press this, the player will skip to the defined starting point">
+									<button class="btn btn-default" type="button" onclick="playStart()"
+										title="When you press this, the player will skip to the defined starting point">
 										Go!
 									</button>
 								</span>
@@ -200,24 +265,29 @@
 								<span class="input-group-addon end-group">&nbsp;End&nbsp;</span>
 								<input id="end_time" type="text" class="form-control" placeholder="00:00:00">
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" onclick="setManualEnd()" title="When you press this the end time will be set to the time you entered in the input field">
+									<button class="btn btn-default" type="button" onclick="setManualEnd()"
+										title="When you press this the end time will be set to the time you entered in the input field">
 										Save
 									</button>
-									<button class="btn btn-default" type="button" onclick="setEnd()" title="When you press this the end time will be same as the current player time">
+									<button class="btn btn-default" type="button" onclick="setEnd()"
+										title="When you press this the end time will be same as the current player time">
 										Copy
 									</button>
-									<button class="btn btn-default" type="button" onclick="playEnd()" title="When you press this, the player will skip to the defined end point">
+									<button class="btn btn-default" type="button" onclick="playEnd()"
+										title="When you press this, the player will skip to the defined end point">
 										Go!
 									</button>
 								</span>
 							</div>
 						</div>
-					</div>
+					</div><!-- END OF PLAYER & CONTROLS-->
 
 					<br>
 
 					<div class="row">
 						<div class="col-sm-12">
+
+							<!-- ONLY SHOWN IN ANCHOR MODE (using ugly jquery :s) -->
 							<form id="anchor_save">
 								<div class="form-group">
 									<label for="anchor_title">Title <span id="anchor_edit">&nbsp;(new)</span></label>
@@ -233,7 +303,16 @@
 								<button class="btn btn-primary" type="button" onclick="saveAnchor()">
 									Save
 								</button>
+								<button class="btn btn-danger" type="button" onclick="backToSelection()">
+									End task / select clip
+								</button>
 							</form>
+
+							<!-- ONLY SHOWN IN REFINEMENT MODE -->
+							<div id="refine_button_panel" class="text-center">
+								<button class="btn btn-primary" onclick="addAnchors();">Add anchors</button>
+							</div>
+
 						</div>
 					</div>
 
@@ -244,16 +323,15 @@
 				<div class="col-md-4">
 					<div class="row">
 						<div class="col-md-12">
-							<div id="tabs" role="tabpanel">
+
+							<!-- ONLY DISPLAYED WHEN EDITING ANCHORS -->
+							<div id="anchor_tabs" role="tabpanel">
 								<ul class="nav nav-tabs" role="tablist">
 									<li role="presentation" class="active">
 										<a href="#anchors" aria-controls="anchors" role="tab" data-toggle="tab">Anchors</a>
 									</li>
 									<li role="presentation">
 										<a href="#guidelines" aria-controls="guidelines" role="tab" data-toggle="tab">Guidelines</a>
-									</li>
-									<li role="presentation">
-										<a href="#help" aria-controls="help" role="tab" data-toggle="tab">Shortcuts</a>
 									</li>
 								</ul>
 
@@ -267,45 +345,11 @@
 										</div>
 									</div>
 
-									<!-- HELP TAB -->
-									<div role="tabpanel" class="tab-pane" id="help">
-										<h3>Keyboard shortcuts</h3>
-										<div class="well" style="color:crimson;">
-											<strong>Warning: keyboard shortcuts ONLY work when your cursor is outside of an input field</strong>
-										</div>
-										<div class="well">
-											<strong>Standard player controls</strong><br>
-											Press <kbd>space</kbd> to play/pause the video.
-										</div>
-										<div class="well">
-											<strong>Fast forward &amp; rewind</strong><br>
-											Use the numbers to fast forward a certain amaount of seconds: e.g. press <kbd>3</kbd> to fast forward 3 seconds. <br><br>
-											To rewind, hold <kbd>SHIFT</kbd> plus a number. <kbd>SHIFT+4</kbd> rewinds the video by 4 seconds.
-
-											Use the left and right arrow to fast forward or rewind by 1 minute:<br><br>
-											Pressing <kbd>left</kbd> on your keypad rewinds the video for 1 minute<br><br>
-											Pressing <kbd>right</kbd> on your keypad fast forwards the video for 1 minute
-										</div>
-
-										<div class="well">
-											<strong>Start &amp; end of clip</strong><br>
-											To mark the start of the clip, press: <kbd>i</kbd><br>
-											To mark the end of the clip, press: <kbd>o</kbd>
-											To go to the start of your clip selection, press: <kbd>SHIFT+i</kbd><br>
-											To go to the end of your clip selection, press: <kbd>SHIFT+o</kbd>
-										</div>
-										<div class="well">
-											<strong>Anchors</strong><br>
-											To save an anchor press: <kbd>CTRL+s</kbd><br>
-											To create a new anchor press: <kbd>CTRL+n</kbd><br>
-											To edit the next anchor in the list press: <kbd>]</kbd><br>
-											To edit the previous anchor in the list press: <kbd>[</kbd><br>
-										</div>
-									</div>
+									<!-- GUIDLINES TAB -->
 									<div role="tabpanel" class="tab-pane" id="guidelines">
 										<h3>Guidelines</h3>
 										<div class="well">
-											Link anchors should be created for one of the following reasons:<br>
+											Anchors should be created for one of the following reasons:<br>
 											<ul>
 												<li>Linked clips may help users to understand the anchor better.</li>
 												<li>Linked clips may contain relevant information about the anchor, given the current information need.</li>
@@ -329,7 +373,7 @@
 	</div>
 
 	<div id="dialog-confirm" title="Finish" style="display:none;">
-		Are you sure you want to proceed to the end of this test?
+		Proceed to next search?
 	</div>
 
 	<script>

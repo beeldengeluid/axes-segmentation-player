@@ -7,6 +7,7 @@ var _start = -1;
 var _end = -1;
 var _screenScale = 0;
 var _videos = [];
+
 var _fragmentMode = false;
 
 var _curVideoIndex = 0;
@@ -254,13 +255,17 @@ function saveAnchor() {
 	}
 }
 
-function newAnchor() {
-	setStart(_videos[_curVideoIndex].start / 1000);
-	setEnd(_videos[_curVideoIndex].end / 1000);
+function clearAnchorForm(){
 	$('#anchor_title').val('');
 	$('#anchor_desc').val('');
 	$('#anchor_edit').text(' (new)');
 	_currentAnchorIndex = -1;
+}
+
+function newAnchor() {
+	setStart(_videos[_curVideoIndex].start / 1000);
+	setEnd(_videos[_curVideoIndex].end / 1000);
+	clearAnchorForm();
 }
 
 function nextAnchor() {
@@ -277,28 +282,6 @@ function previousAnchor() {
 			loadAnchor(_currentAnchorIndex-1);
 		}
 	}
-}
-
-/***********************************************************************************
- * switch mode
- **********************************************************************************/
-
-function switchMode() {
-	var buttonText = $("#edit_mode").text();
-	_fragmentMode = buttonText.indexOf('anchors') != -1;
-	//if going into the mode where anchors can be edited, save the boundaries of the clip
-	if(_fragmentMode) {
-		$('#anchor_save').css('visibility', 'visible');
-		_videos[_curVideoIndex].start = _start * 1000;//ms!
-		_videos[_curVideoIndex].end = _end * 1000;//ms!
-	} else {
-		$('#anchor_save').css('visibility', 'hidden');
-		//TODO save the anchors to the current clip
-	}
-	selectVideo(_curVideoIndex);
-	initTimebar(_fragmentMode);
-	$("#edit_mode").text(_fragmentMode ? 'Refine clip' : 'Save refinement & Edit anchors');
-	updateBar();
 }
 
 /***********************************************************************************
@@ -324,9 +307,9 @@ function updateBar() {
 		ctx.fillStyle = "#FF0000";
 		ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
 		ctx.fillStyle = "#00FF00";
-		ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
+		ctx.fillRect(startPoint, 0, 3, c.height);//time progressing
 		ctx.fillStyle = "#FFFF00";
-		ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
+		ctx.fillRect(endPoint, 0, 3, c.height);//time progressing
 		ctx.font = "20px Verdana";
 		ctx.fillStyle = "#FFFF00";
 		ctx.fillText(formattedTime, 10, c.height - 5);
@@ -344,9 +327,9 @@ function updateBar() {
 		ctx.fillStyle = "#FF0000";
 		ctx.fillRect(0,0, elapsed, c.height / 3);//time progressing
 		ctx.fillStyle = "#00FF00";
-		ctx.fillRect(startPoint, 0, 2, c.height);//time progressing
+		ctx.fillRect(startPoint, 0, 3, c.height);//time progressing
 		ctx.fillStyle = "#FFFF00";
-		ctx.fillRect(endPoint, 0, 2, c.height);//time progressing
+		ctx.fillRect(endPoint, 0, 3, c.height);//time progressing
 		ctx.font = "20px Verdana";
 		ctx.fillStyle = "#FFFFFF";
 		ctx.fillText(formattedTime, 10, c.height - 5);
@@ -365,21 +348,26 @@ function getMousePos(canvas, evt) {
  * playout functions
  **********************************************************************************/
 
-function updateVideoMetadata(videoObj) {
-	$('#video_start').text(formatTime(videoObj.start / 1000));
-	$('#video_end').text(formatTime(videoObj.end / 1000));
+function updateVideoMetadata() {
+	var vd = ['Current clip: '];
+	vd.push(_videos[_curVideoIndex].title + ' ');
+	vd.push(formatTime(_videos[_curVideoIndex].start / 1000) + ' ');
+	vd.push(formatTime(_videos[_curVideoIndex].end / 1000));
+	$('#video_label').text(vd.join(''));
+
 }
 
-function playClip(videoObj) {
-	updateVideoMetadata(videoObj);
+function playClip() {
+	updateVideoMetadata();
+	var url = _videos[_curVideoIndex].videoURL;
+	url += '#t=' + (_videos[_curVideoIndex].start / 1000);
+	url += ',' + (_videos[_curVideoIndex].end / 1000);
 	jw = jwplayer("video_player").setup({
-		file: videoObj.videoURL + '#t=' + (videoObj.start / 1000) + ',' + (videoObj.end / 1000),
+		file: url,
 		width:'100%',
 		controls : false,
 		image: null
 	}).onTime(onPlayerTime).onResize(onResizePlayer).onReady(onPlayerReady);
-	setStart(videoObj.start / 1000);
-	setEnd(videoObj.end / 1000);
 }
 
 /***********************************************************************************
@@ -432,15 +420,56 @@ function toPrettyVideoName(videoUrl) {
 	return videoUrl;
 }
 
-function changeVideo(elm) {
-	selectVideo($('#video_select option:selected').val());
-}
-
 function selectVideo(index) {
 	_curVideoIndex = index;
-	_currentClip = _videos[_curVideoIndex];
-	playClip(_currentClip);
+	clearAnchorForm();
+	playClip();
+	setStart(_videos[_curVideoIndex].start / 1000);
+	setEnd(_videos[_curVideoIndex].end / 1000);
 	updateAnchors();
+	initTimebar(_fragmentMode);
+}
+
+/***********************************************************************************
+ * Overall navigation
+ **********************************************************************************/
+
+function refineClip(index) {
+	_fragmentMode = false;
+	updateVideoMetadata();
+	$('#video_player').css('display', 'block');
+	$('#selection_panel').css('display', 'none');
+	$('#refinement_panel').css('visibility', 'visible');
+	$('#refine_button_panel').css('display', 'block');
+	$('#anchor_tabs').css('display', 'none');
+	selectVideo(index);
+	updateBar();
+}
+
+function addAnchors() {
+	_fragmentMode = true;
+	//needed for the playing the video fragment correctly
+	_videos[_curVideoIndex].start = _start * 1000;//ms!
+	_videos[_curVideoIndex].end = _end * 1000;//ms!
+	selectVideo(_curVideoIndex);
+	updateBar();
+
+	$('#refine_button_panel').css('display', 'none');
+	$('#anchor_save').css('display', 'block');
+	$('#anchor_tabs').css('display', 'block');
+	switchMode();
+}
+
+function backToSelection() {
+	save();
+	updateSelectionTable();
+	$('#selection_panel').css('display', 'block');
+	$('#refinement_panel').css('visibility', 'hidden');
+	$('#refine_button_panel').css('display', 'none');
+	$('#anchor_save').css('display', 'none');
+	$('#anchor_tabs').css('display', 'none');
+	$('#video_player').css('display', 'none');
+	jw.stop();
 }
 
 /***********************************************************************************
@@ -474,9 +503,8 @@ function save() {
 function init() {
 	console.debug(_videoData);
 	initVideoData();
-	selectVideo(_curVideoIndex);
-	initTabs();
 	initTimebar();
+	initTabs();
 	initKeyBindings();
 }
 
@@ -487,14 +515,34 @@ function initVideoData() {
 		$.each(_videoData['relevant'], function(index, value) {
 			_videos.push(value);
 		});
+		updateSelectionTable();
 	} else {
 		alert('You have to post some video data in order for this page to load');
 		//document.location.href = '/axes-segmentation-player';
 	}
 }
 
+function updateSelectionTable() {
+	var html = [];
+	$.each(_videos, function(index, v){
+		html.push('<tr>');
+		html.push('<td>'+v.title+'</td>');
+		html.push('<td>'+formatTime(v.start / 1000)+'</td>');
+		html.push('<td>'+formatTime(v.end / 1000)+'</td>');
+		html.push('<td>');
+		if(!_videos[index].anchors || _videos[index].anchors.length == 0) {
+			html.push('<button id="edit_mode" class="btn btn-primary" onclick="refineClip('+index+')">');
+			html.push('Refine clip');
+			html.push('</button>');
+		}
+		html.push('</td>');
+		html.push('</tr>');
+	});
+	$('#select_table').html(html.join(''));
+}
+
 function initTabs() {
-	$('#tabs a').click(function (e) {
+	$('#anchor_tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
 	});

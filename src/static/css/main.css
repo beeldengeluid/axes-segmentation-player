@@ -12,10 +12,6 @@
 	text-align: center;
 }
 
-#anchor_save {
-	visibility:hidden;
-}
-
 .start-group {
 	background-color:#00FF00;
 }
@@ -24,11 +20,41 @@
 	background-color:#FFFF00;
 }
 
-.video-label {
+#video_label {
 	font-weight:bold;
 	font-size:120%;
 }
 
 .anchor {
 	cursor:pointer !important;
+}
+
+
+/*switching between selection and refinement mode*/
+
+#video_player {
+
+}
+
+#selection_panel {
+
+}
+
+#refinement_panel {
+	visibility:hidden;
+}
+
+
+/*Switching between refinement and anchor mode*/
+
+#refine_button_panel {
+	display:none;
+}
+
+#anchor_tabs {
+	display:none;
+}
+
+#anchor_save {
+	display:none;
 }
