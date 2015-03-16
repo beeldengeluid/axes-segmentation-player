@@ -111,6 +111,7 @@ function setEnd(end) {
 			$('#end_time').val(formatTime(_end));
 			updateBar();
 		}
+		jw.pause();
 	} else {
 		alert('The end time must be bigger than the start time');
 	}

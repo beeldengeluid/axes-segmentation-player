@@ -102,14 +102,14 @@
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" onclick="setManualStart()"
 										title="When you press this the start time will be set to the time you entered in the input field">
-										Save
+										Set
 									</button>
 									<button class="btn btn-default" type="button" onclick="setStart()"
-										title="When you press this the start time will be same as the current player time">
+										title="When you press this the start time will be same as the current player time (press i)">
 										Copy
 									</button>
 									<button class="btn btn-default" type="button" onclick="playStart()"
-										title="When you press this, the player will skip to the defined starting point">
+										title="When you press this, the player will skip to the defined starting point (SHIFT+i)">
 										Go!
 									</button>
 								</span>
@@ -122,14 +122,14 @@
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" onclick="setManualEnd()"
 										title="When you press this the end time will be set to the time you entered in the input field">
-										Save
+										Set
 									</button>
 									<button class="btn btn-default" type="button" onclick="setEnd()"
-										title="When you press this the end time will be same as the current player time">
+										title="When you press this the end time will be same as the current player time (press o)">
 										Copy
 									</button>
 									<button class="btn btn-default" type="button" onclick="playEnd()"
-										title="When you press this, the player will skip to the defined end point">
+										title="When you press this, the player will skip to the defined end point (SHIFT+o)">
 										Go!
 									</button>
 								</span>
@@ -297,10 +297,11 @@
 
 	<script src="./static/js/jquery.min.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-	<script src="./static/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./static/js/jwerty/jwerty.js"></script>
+	<script src="./static/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./static/jwplayer/jwplayer.js"></script>
 	<script type="text/javascript" src="./static/js/moment.min.js"></script>
+
 	<script type="text/javascript" src="./static/js/player.js"></script>
 
 

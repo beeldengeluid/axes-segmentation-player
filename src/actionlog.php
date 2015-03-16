@@ -97,7 +97,11 @@ $list = generateList();
 		<?php foreach($list as $item) { ?>
 			<tr>
 				<td><?php echo $item['userID']; ?></td>
-				<td><?php echo $item['needID']; ?></td>
+				<td>
+					<a href="http://rdbg.tuxic.nl/axessegment/getdata.php?id=<?php echo $item['needID']; ?>" target="_need">
+						<?php echo $item['needID']; ?>
+					</a>
+				</td>
 				<td><?php echo $item['perspective']; ?></td>
 				<td><?php echo $item['description']; ?></td>
 				<td>
