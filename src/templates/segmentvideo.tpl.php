@@ -13,97 +13,6 @@
 
 <link href="./static/css/main.css" rel="stylesheet" type="text/css">
 
-<style type="text/css">
-
-	/*
-	Color hierarchy
-	---------------
-
-	red: #e00034; (Logo)
-	blue: #009fda; (Consument, Professionals, Instituut)
-	yellow: #fce300; (Consument, Onderwijs)
-
-	grey: # c7c2ba;
-	orange: #ff5800;
-	green-light: #92d400;
-	blue-dark: # 0028be;
-	purple: #56197b;
-	green: #00b400;
-
-	*/
-
-	body {
-		font-family: 'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif;
-		text-rendering: optimizelegibility;
-		position: relative;
-		padding-top: 70px;
-		line-height: 1.6;
-	}
-
-	a {
-		color: #009fda;
-	}
-
-	.navbar {
-		text-transform: uppercase;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
-	}
-
-	.beng-header {
-		font-family: 'Roboto Condensed','Helvetica Neue',Helvetica,Arial,sans-serif;
-		text-transform: uppercase;
-		font-weight: 700;
-	}
-
-	.beng-header-sub {
-		font-family: 'Ubuntu','Helvetica Neue',Helvetica,Arial,sans-serif;
-		font-weight: 300;
-		font-style: italic;
-	}
-
-	.page-header .beng-header-sub {
-		margin-top: 0;
-		color: #009fda;
-	}
-
-	.beng-header-block-blue {
-		background-color: #009fda;
-		color: #ffffff;
-		box-shadow: -10px 0 0 #009fda, 10px 0 0 #009fda;
-		box-decoration-break: clone;
-	}
-
-	.beng-header-block-red {
-		background-color: #e00034;
-		color: #ffffff;
-		box-shadow: -10px 0 0 #e00034, 10px 0 0 #e00034;
-		box-decoration-break: clone;
-	}
-
-	.beng-text-blue {
-		color: #009fda;
-	}
-
-	.beng-text-red {
-		color: #e00034;
-	}
-
-	/* demo CSS */
-
-	#demo-icons span {
-		display: block;
-		margin: 20px;
-		float: left;
-		font-size: 32px;
-	}
-
-	#home, #typography, #icons, #contact {
-		padding-top: 70px;
-		padding-bottom: 70px;
-	}
-
-	</style>
-
 </head>
 
 <body data-spy="scroll" data-target="#navbar" data-offset="100">
@@ -117,12 +26,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">Labs · Beeld en Geluid</a>
+				<a class="navbar-brand" href="#">Labs · Beeld en Geluid</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="active"><a href="/">Video</a></li>
-					<li class=""><a href="/">Contact</a></li>
+					<li><a href="#" id="session_id"></a></li>
 				</ul>
 			</div>
 		</div>
@@ -269,6 +177,21 @@
 								<div class="form-group">
 									<label for="anchor_desc">Description of ideal linked video</label>
 									<input id="anchor_desc" type="text" class="form-control" placeholder="Description">
+								</div>
+								<div class="form-group">
+									<label for="anchor_options">Perspective</label>
+									<div id="anchor_options" class="btn-group" data-toggle="buttons">
+									    <label class="btn btn-default active">
+									        <input type="radio" name="anchor_perspective" id="default_perspective"
+									         value="My preference" checked>
+									    My preference </label>
+									    <label class="btn btn-default">
+									        <input type="radio" name="anchor_perspective" value="Others">
+									    Others </label>
+									    <label class="btn btn-default">
+									        <input type="radio" name="anchor_perspective" value="Both">
+									    Both </label>
+									</div>
 								</div>
 								<button class="btn btn-primary" type="button" onclick="newAnchor()">
 									New anchor

@@ -236,7 +236,8 @@ function saveAnchor() {
 			start : _start * 1000,
 			end : _end * 1000,
 			title : $('#anchor_title').val(),
-	      	description : $('#anchor_desc').val()
+	      	description : $('#anchor_desc').val(),
+	      	perspective : $("input:radio[name=anchor_perspective]:checked").val()
 		}
 		if(_currentAnchorIndex != -1) {
 			_videos[_curVideoIndex].anchors[_currentAnchorIndex] = anchor;
@@ -259,6 +260,9 @@ function clearAnchorForm(){
 	$('#anchor_title').val('');
 	$('#anchor_desc').val('');
 	$('#anchor_edit').text(' (new)');
+	$("#default_perspective").attr('checked', 'checked');
+	$("#anchor_options label").removeClass('active');
+	$("#anchor_options label:eq(0)").addClass('active');
 	_currentAnchorIndex = -1;
 }
 
@@ -390,24 +394,6 @@ function setManualEnd() {
 	jw.seek(_end);
 }
 
-function finish() {
-	$( "#dialog-confirm" ).dialog({
-		resizable: false,
-		height:240,
-		modal: true,
-		buttons: {
-			"Finish": function() {
-				$(this).dialog("close");
-				alert('You have completed this test and are redirected back to the starting page');
-				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
-			},
-			"Cancel": function() {
-		  		$(this).dialog("close");
-			}
-		}
-    });
-}
-
 /***********************************************************************************
  * video select functions
  **********************************************************************************/
@@ -457,7 +443,6 @@ function addAnchors() {
 	$('#refine_button_panel').css('display', 'none');
 	$('#anchor_save').css('display', 'block');
 	$('#anchor_tabs').css('display', 'block');
-	switchMode();
 }
 
 function backToSelection() {
@@ -470,6 +455,23 @@ function backToSelection() {
 	$('#anchor_tabs').css('display', 'none');
 	$('#video_player').css('display', 'none');
 	jw.stop();
+}
+
+function finish() {
+	$( "#dialog-confirm" ).dialog({
+		resizable: false,
+		height:240,
+		modal: true,
+		buttons: {
+			"Finish": function() {
+				$(this).dialog("close");
+				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+			},
+			"Cancel": function() {
+		  		$(this).dialog("close");
+			}
+		}
+    });
 }
 
 /***********************************************************************************
@@ -511,6 +513,7 @@ function init() {
 function initVideoData() {
 	if(_videoData) {
 		$('#description').text('You were looking for: "' + _videoData.description + '"');
+		$('#session_id').text('ID: ' + _videoData.ID + ' / ' + _videoData.userID);
 		//fill the list of videos
 		$.each(_videoData['relevant'], function(index, value) {
 			_videos.push(value);

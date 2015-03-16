@@ -1,3 +1,77 @@
+/* COPIED B&G STUFF */
+
+body {
+	font-family: 'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif;
+	text-rendering: optimizelegibility;
+	position: relative;
+	padding-top: 70px;
+	line-height: 1.6;
+}
+
+a {
+	color: #009fda;
+}
+
+.navbar {
+	text-transform: uppercase;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+}
+
+.beng-header {
+	font-family: 'Roboto Condensed','Helvetica Neue',Helvetica,Arial,sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.beng-header-sub {
+	font-family: 'Ubuntu','Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-weight: 300;
+	font-style: italic;
+}
+
+.page-header .beng-header-sub {
+	margin-top: 0;
+	color: #009fda;
+}
+
+.beng-header-block-blue {
+	background-color: #009fda;
+	color: #ffffff;
+	box-shadow: -10px 0 0 #009fda, 10px 0 0 #009fda;
+	box-decoration-break: clone;
+}
+
+.beng-header-block-red {
+	background-color: #e00034;
+	color: #ffffff;
+	box-shadow: -10px 0 0 #e00034, 10px 0 0 #e00034;
+	box-decoration-break: clone;
+}
+
+.beng-text-blue {
+	color: #009fda;
+}
+
+.beng-text-red {
+	color: #e00034;
+}
+
+/* demo CSS */
+
+#demo-icons span {
+	display: block;
+	margin: 20px;
+	float: left;
+	font-size: 32px;
+}
+
+#home, #typography, #icons, #contact {
+	padding-top: 70px;
+	padding-bottom: 70px;
+}
+
+/*SPECIFIC FOR THIS APP*/
+
 #timebar {
 	width:100%;
 	height:50px;
@@ -57,4 +131,10 @@
 
 #anchor_save {
 	display:none;
+}
+
+/* OVERRIDE BOOTSTRAP ACTIVE RADIOBUTTON COLORS */
+#anchor_options .btn.active, .btn:active {
+    background-color: #337ab7;
+    color: white;
 }

@@ -49,6 +49,7 @@ function generateList() {
 						$item['anchorDescription'] = $anchor->description;
 						$item['anchorStart'] = toPrettyTime($anchor->start);
 						$item['anchorEnd'] = toPrettyTime($anchor->end);
+						$item['perspective'] = $anchor->perspective;
 					}
 				}
 				array_push($list, $item);
@@ -104,6 +105,7 @@ $list = generateList();
 				<td><?php echo $item['anchorDescription']; ?></td>
 				<td><?php echo $item['anchorStart']; ?></td>
 				<td><?php echo $item['anchorEnd']; ?></td>
+				<td><?php echo $item['perspective']; ?></td>
 			</tr>
 		<?php } ?>
 	</table>
