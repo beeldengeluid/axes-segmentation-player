@@ -95,7 +95,7 @@ function setStart(start) {
 	}
 }
 
-function setEnd(end) {
+function setEnd(end, skipPause) {
 	var temp = -1;
 	if(end == undefined) {
 		temp = jw.getPosition();
@@ -111,7 +111,9 @@ function setEnd(end) {
 			$('#end_time').val(formatTime(_end));
 			updateBar();
 		}
-		jw.pause(true);
+		if(skipPause == undefined) {
+			jw.pause(true);
+		}
 	} else {
 		alert('The end time must be bigger than the start time');
 	}
@@ -292,9 +294,9 @@ function clearAnchorForm(){
 function newAnchor() {
 	if(saveAnchor()) {
 		setStart(_videos[_curVideoIndex].start / 1000);
-		setEnd(_videos[_curVideoIndex].end / 1000);
+		setEnd(_videos[_curVideoIndex].end / 1000, true);
 		clearAnchorForm();
-		playStart();
+		//playStart();
 	}
 }
 
