@@ -292,11 +292,20 @@ function clearAnchorForm(){
 }
 
 function newAnchor() {
+	var tempStart = _end;
+	console.debug(tempStart + ' ' + (_videos[_curVideoIndex].end / 1000));
 	if(saveAnchor()) {
-		setStart(_videos[_curVideoIndex].start / 1000);
-		setEnd(_videos[_curVideoIndex].end / 1000, true);
+		//setStart(_videos[_curVideoIndex].start / 1000);
+		_end = -1;
+		if(tempStart < _videos[_curVideoIndex].end / 1000) {
+			setStart(tempStart);
+			setEnd(_videos[_curVideoIndex].end / 1000, true);
+		} else {
+			setStart();
+			setEnd(_videos[_curVideoIndex].end / 1000, true);
+		}
 		clearAnchorForm();
-		//playStart();
+		playStart();
 	}
 }
 
