@@ -5,9 +5,9 @@ function toPrettyTime($ms) {
 	$hours = 0;
 	$minutes = 0;
 	$seconds = 0;
-	while($ms >= 360000){
+	while($ms >= 3600000){
 		$hours++;
-		$ms -= 360000;
+		$ms -= 3600000;
 	}
 	while($ms >= 60000) {
 		$minutes++;
@@ -41,6 +41,7 @@ function generateList() {
 					'description' => $rec->description,
 					'videoTitle' => $video->title,
 					'videoUrl' => $video->videoURL,
+					'start' => $video->start,
 					'videoStart' => toPrettyTime($video->start),
 					'videoEnd' => toPrettyTime($video->end)
 				);
@@ -113,6 +114,7 @@ $list = generateList();
 						<?php echo $item['videoTitle']; ?>
 					</a>
 				</td>
+				<td><?php echo $item['start']; ?></td>
 				<td><?php echo $item['videoStart']; ?></td>
 				<td><?php echo $item['videoEnd']; ?></td>
 				<td><?php echo $item['anchorTitle']; ?></td>
