@@ -61,10 +61,8 @@ function validateDuration(start, end) {
 		return true;
 	}
 	if(end - start < 15 && !_fragmentMode) {
-		alert('A clip must be at least 15 seconds long');
 		return false;
 	} else if(end - start < 1 && _fragmentMode) {
-		alert('An anchor must be at least 1 seconds long');
 		return false;
 	}
 	return true;
@@ -82,14 +80,12 @@ function setStart(start) {
 		temp = start;
 	}
 	if((_end != -1 && temp < _end) || _end == -1) {
-		if(validateDuration(temp, _end)) {
-			_start = temp;
-			if(!_fragmentMode) {
-				$('#video_start').text(formatTime(_start));
-			}
-			$('#start_time').val(formatTime(_start));
-			updateBar();
+		_start = temp;
+		if(!_fragmentMode) {
+			$('#video_start').text(formatTime(_start));
 		}
+		$('#start_time').val(formatTime(_start));
+		updateBar();
 	} else {
 		alert('The start must be smaller than the end time');
 	}
@@ -103,14 +99,12 @@ function setEnd(end, skipPause) {
 		temp = end;
 	}
 	if((_start != -1 && temp > _start) || _start == -1) {
-		if(validateDuration(_start, temp)) {
-			_end = temp;
-			if(!_fragmentMode) {
-				$('#video_end').text(formatTime(_end));
-			}
-			$('#end_time').val(formatTime(_end));
-			updateBar();
+		_end = temp;
+		if(!_fragmentMode) {
+			$('#video_end').text(formatTime(_end));
 		}
+		$('#end_time').val(formatTime(_end));
+		updateBar();
 		if(skipPause == undefined) {
 			jw.pause(true);
 		}
@@ -246,6 +240,10 @@ function deleteAnchor(index) {
 }
 
 function validateAnchor() {
+	if(!validateDuration(_start, _end)) {
+		alert('An anchor must be at least 1 second long');
+		return false;
+	}
 	if($('#anchor_title').val().trim().length < 5 || $('#anchor_desc').val().trim().length <5) {
 		alert('Please enter a title and a description of at least 5 characters each');
 		return false;
@@ -488,35 +486,39 @@ function refineClip(index) {
 }
 
 function addAnchors(index) {
-	$('#navbar-info').text('Edit anchors');
-	_fragmentMode = true;
+	if(validateDuration(_start, _end)) {
+		$('#navbar-info').text('Edit anchors');
+		_fragmentMode = true;
 
-	if(index == undefined) {
-		//needed for the playing the video fragment correctly
-		_videos[_curVideoIndex].start = _start * 1000;//ms!
-		_videos[_curVideoIndex].end = _end * 1000;//ms!
-		selectVideo(_curVideoIndex, false);
+		if(index == undefined) {
+			//needed for the playing the video fragment correctly
+			_videos[_curVideoIndex].start = _start * 1000;//ms!
+			_videos[_curVideoIndex].end = _end * 1000;//ms!
+			selectVideo(_curVideoIndex, false);
+		}
+
+		if(index != undefined) {
+			selectVideo(_curVideoIndex, false);
+			_curVideoIndex = index;
+			setStart(_videos[_curVideoIndex].start / 1000);
+			setEnd(_videos[_curVideoIndex].end / 1000);
+			updateVideoMetadata();
+			$('#selection_panel').css('display', 'none');
+			$('#video_player').css('display', 'block');
+			$('#refinement_panel').css('visibility', 'visible');
+			_videos[_curVideoIndex].start = _start * 1000;//ms!
+			_videos[_curVideoIndex].end = _end * 1000;//ms!
+		}
+
+		$('#refine_button_panel').css('display', 'none');
+		$('#refine_tabs').css('display', 'none');
+		$('#anchor_save').css('display', 'block');
+		$('#anchor_tabs').css('display', 'block');
+		updateAnchors();
+		updateBar();
+	} else {
+		alert('A clip must be at least 15 seconds long');
 	}
-
-	if(index != undefined) {
-		selectVideo(_curVideoIndex, false);
-		_curVideoIndex = index;
-		setStart(_videos[_curVideoIndex].start / 1000);
-		setEnd(_videos[_curVideoIndex].end / 1000);
-		updateVideoMetadata();
-		$('#selection_panel').css('display', 'none');
-		$('#video_player').css('display', 'block');
-		$('#refinement_panel').css('visibility', 'visible');
-		_videos[_curVideoIndex].start = _start * 1000;//ms!
-		_videos[_curVideoIndex].end = _end * 1000;//ms!
-	}
-
-	$('#refine_button_panel').css('display', 'none');
-	$('#refine_tabs').css('display', 'none');
-	$('#anchor_save').css('display', 'block');
-	$('#anchor_tabs').css('display', 'block');
-	updateAnchors();
-	updateBar();
 }
 
 function backToSelection(validate) {
