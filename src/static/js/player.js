@@ -566,7 +566,8 @@ function finish() {
 		buttons: {
 			"Finish": function() {
 				$(this).dialog("close");
-				document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+				//document.location.href = 'http://axes.ch.bbc.co.uk/axes/me2014/axes/#/';
+				document.location.href = 'http://axis.ewi.utwente.nl/axes-me2015';
 			},
 			"Cancel": function() {
 		  		$(this).dialog("close");
