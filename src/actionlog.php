@@ -26,6 +26,7 @@ function toPrettyTime($ms) {
 function generateList() {
 	$redis = new Redis();
 	$redis->connect('127.0.0.1', 6379);
+	$redis->auth('somepass');
 	$redis->select(11);
 	$ids = $redis->hkeys('savedata');
 	$rec = null;

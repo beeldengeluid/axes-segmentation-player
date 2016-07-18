@@ -7,6 +7,7 @@ $tpl = new Savant3();
 //connect to the redis store
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
+$redis->auth('somepass');
 $redis->select(11);
 
 //if the id is supplied via GET use that
